@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assign variables and read reads one variable 1`] = `
+"++++++++++ // set to 10 / 0xa / 
+
+> // move to 1
++++++++++++++++ // set to 15 / 0xf / 
+< // move to 0
+[
+-
+>> // move to 2
++
+< // move to 1
++
+< // move to 0
+]
+> // move to 1
+.
+> // move to 2
+.
+"
+`;
