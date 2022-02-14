@@ -1,7 +1,7 @@
 {
   "name": "brainfuck",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/Transcompiler.ts",
   "author": "Vakrim",
   "license": "MIT",
   "private": true,

@@ -2,7 +2,7 @@ import { Transcompiler } from "../Transcompiler";
 import { executeCode } from "./execute-code";
 
 describe("adding", () => {
-  it("add two variables", () => {
+  it("adds two variables", () => {
     const compiler = new Transcompiler();
 
     compiler.declareVariable("a");

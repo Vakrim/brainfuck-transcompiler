@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`adding add two variables 1`] = `
+exports[`adding adds two variables 1`] = `
 "
 declare a; assign 10 to a
 ++++++++++
