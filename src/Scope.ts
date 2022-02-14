@@ -76,6 +76,18 @@ export class Scope {
     return this.#parent.getScopeOfVariable(name);
   }
 
+  getVariablesOfThisScope(): string[] {
+    return Array.from(this.#variables.keys());
+  }
+
+  getParentScope(): Scope {
+    if(!this.#parent) {
+      throw new Error('There are not parent Scope');
+    }
+
+    return this.#parent;
+  }
+
   promoteVariable(name: string, temp: TemporaryVariable) {
     const scope = this.getScopeOfVariable(name);
 

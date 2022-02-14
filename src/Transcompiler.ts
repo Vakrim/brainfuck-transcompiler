@@ -11,9 +11,9 @@ export class Transcompiler {
   #code: string;
   #commentBuffer: string;
 
-  constructor() {
+  constructor(memory = new Memory()) {
     this.#cursorPosition = 0 as Address;
-    this.#memory = new Memory();
+    this.#memory = memory;
     this.#scope = new Scope(null, this.#memory);
     this.#code = "";
     this.#commentBuffer = "";
@@ -63,6 +63,19 @@ export class Transcompiler {
     this.#scope.promoteVariable(from, newFrom);
   }
 
+  pushScope() {
+    this.#scope = new Scope(this.#scope, this.#memory);
+  }
+
+  popScope() {
+    const variables = this.#scope.getVariablesOfThisScope();
+    for (const variable of variables) {
+      this.#reset(variable);
+      this.#scope.unsetVariable(variable);
+    }
+    this.#scope = this.#scope.getParentScope();
+  }
+
   get code() {
     return this.#code;
   }
@@ -80,6 +93,11 @@ export class Transcompiler {
         : nameOrVariable;
 
     this.#moveTo(variable.address);
+  }
+
+  #reset(name: string) {
+    this.#moveToVariable(name);
+    this.#outputBrainfuck("[-]");
   }
 
   #moveTo(address: Address) {
