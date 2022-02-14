@@ -1,8 +1,8 @@
 import { Transcompiler } from "../Transcompiler";
 import { executeCode } from "./execute-code";
 
-describe("assign variables and read", () => {
-  it("reads one variable", () => {
+describe("adding", () => {
+  it("add two variables", () => {
     const compiler = new Transcompiler();
 
     compiler.declareVariable("a");
@@ -10,7 +10,7 @@ describe("assign variables and read", () => {
     compiler.declareVariable("b");
     compiler.assignValue("b", 15);
 
-    compiler.add("a", "b");
+    compiler.add("b", "a");
 
     compiler.readVariable("b");
     compiler.readVariable("a");
@@ -18,5 +18,31 @@ describe("assign variables and read", () => {
     expect(compiler.code).toMatchSnapshot();
 
     expect(executeCode(compiler.code).codes).toEqual([25, 10]);
+  });
+
+  it("reads three inputs and sums them", () => {
+    const compiler = new Transcompiler();
+
+    compiler.declareVariable("a");
+    compiler.declareVariable("b");
+    compiler.declareVariable("c");
+
+    compiler.writeInput("a");
+    compiler.writeInput("b");
+    compiler.writeInput("c");
+
+    compiler.declareVariable("sum");
+
+    compiler.add("sum", "a");
+    compiler.add("sum", "b");
+    compiler.add("sum", "c");
+
+    compiler.readVariable("sum");
+
+    expect(compiler.code).toMatchSnapshot();
+
+    expect(
+      executeCode(compiler.code, String.fromCharCode(10, 20, 30)).codes
+    ).toEqual([60]);
   });
 });

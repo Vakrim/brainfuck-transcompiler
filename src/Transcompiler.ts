@@ -9,29 +9,46 @@ export class Transcompiler {
   #memory: Memory;
   #scope: Scope;
   #code: string;
+  #commentBuffer: string;
 
   constructor() {
     this.#cursorPosition = 0 as Address;
     this.#memory = new Memory();
     this.#scope = new Scope(null, this.#memory);
     this.#code = "";
+    this.#commentBuffer = "";
   }
 
   declareVariable(name: string) {
+    this.#comment(`declare ${name}`);
+
     this.#scope.declareVariable(name, this.#cursorPosition);
   }
 
   assignValue(name: string, value: number) {
+    this.#comment(`assign ${value} to ${name}`);
+
     this.#moveToVariable(name);
     this.#setValue(value);
   }
 
+  writeInput(name: string) {
+    this.#comment(`write input ${name}`);
+
+    this.#moveToVariable(name);
+    this.#outputBrainfuck(",");
+  }
+
   readVariable(name: string) {
+    this.#comment(`read ${name}`);
+
     this.#moveToVariable(name);
     this.#readValue();
   }
 
-  add(from: string, ...tos: string[]) {
+  add(to: string, from: string) {
+    this.#comment(`add ${from} to ${to}`);
+
     this.#moveToVariable(from);
     const newFrom = this.#scope.declareTemporaryVariable(this.#cursorPosition);
 
@@ -39,10 +56,8 @@ export class Transcompiler {
       this.#moveToVariable(newFrom);
       this.#inc();
 
-      tos.forEach(to => {
-        this.#moveToVariable(to);
-        this.#inc();
-      })
+      this.#moveToVariable(to);
+      this.#inc();
     });
 
     this.#scope.promoteVariable(from, newFrom);
@@ -50,6 +65,12 @@ export class Transcompiler {
 
   get code() {
     return this.#code;
+  }
+
+  #comment(comment: string) {
+    this.#commentBuffer = this.#commentBuffer
+      ? [this.#commentBuffer, comment].join("; ")
+      : comment;
   }
 
   #moveToVariable(nameOrVariable: string | Variable | TemporaryVariable) {
@@ -64,9 +85,9 @@ export class Transcompiler {
   #moveTo(address: Address) {
     const difference = address - this.#cursorPosition;
     if (difference < 0) {
-      this.#outputBrainfuck("<".repeat(-difference), `move to ${address}`);
+      this.#outputBrainfuck("<".repeat(-difference));
     } else if (difference > 0) {
-      this.#outputBrainfuck(">".repeat(difference), `move to ${address}`);
+      this.#outputBrainfuck(">".repeat(difference));
     }
     this.#cursorPosition = address;
   }
@@ -80,8 +101,12 @@ export class Transcompiler {
     this.#outputBrainfuck(`]`);
   }
 
-  #outputBrainfuck(bf: string, comment?: string) {
-    this.#code += `${bf}${comment ? ` // ${comment}` : ""}\n`;
+  #outputBrainfuck(bf: string) {
+    if (this.#commentBuffer) {
+      this.#code += `\n${this.#commentBuffer}\n`;
+      this.#commentBuffer = "";
+    }
+    this.#code += bf;
   }
 
   #dec() {
@@ -93,12 +118,7 @@ export class Transcompiler {
   }
 
   #setValue(value: number) {
-    this.#outputBrainfuck(
-      "+".repeat(value),
-      `set to ${value} / 0x${value.toString(16)} / ${String.fromCharCode(
-        value
-      )}`
-    );
+    this.#outputBrainfuck("+".repeat(value));
   }
 
   #readValue() {
