@@ -3,20 +3,24 @@ import { Scope } from "./Scope";
 
 export class Memory {
   #tape: Map<Address, Scope>;
+  #dirties: Set<Address>;
 
   constructor() {
     this.#tape = new Map();
+    this.#dirties = new Set();
   }
 
-  allocate(scope: Scope, nextTo: Address): Address {
+  allocate(scope: Scope, nextTo: Address): Allocation {
     const address = this.#findFreeAdrress(nextTo);
+    const isDirty = this.#dirties.has(address);
 
     this.#tape.set(address, scope);
+    this.#dirties.delete(address);
 
-    return address;
+    return { address, isDirty };
   }
 
-  free(address: Address, scope: Scope) {
+  free(address: Address, isDirty: boolean, scope: Scope) {
     const cell = this.#tape.get(address);
     if (!cell) {
       throw new Error(`Cell with address = ${address} is not allocated`);
@@ -27,6 +31,9 @@ export class Memory {
       );
     }
 
+    if (isDirty) {
+      this.#dirties.add(address);
+    }
     this.#tape.delete(address);
   }
 
@@ -36,9 +43,17 @@ export class Memory {
         return (nextTo + searchRange) as Address;
       }
 
-      if (nextTo - searchRange >= 0 && !this.#tape.has((nextTo - searchRange) as Address)) {
+      if (
+        nextTo - searchRange >= 0 &&
+        !this.#tape.has((nextTo - searchRange) as Address)
+      ) {
         return (nextTo - searchRange) as Address;
       }
     }
   }
+}
+
+interface Allocation {
+  address: Address;
+  isDirty: boolean;
 }

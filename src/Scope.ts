@@ -21,11 +21,13 @@ export class Scope {
       throw new Error(`Can't redeclare variable with name "${name}"`);
     }
 
-    const address = this.#memory.allocate(this, nextTo);
+    const { address, isDirty } = this.#memory.allocate(this, nextTo);
 
     const variable = new Variable(name, address, this);
 
     this.#variables.set(name, variable);
+
+    return isDirty;
   }
 
   unsetVariable(name: string) {
@@ -37,27 +39,27 @@ export class Scope {
 
     this.#variables.delete(name);
 
-    this.#memory.free(variable.address, this);
+    this.#memory.free(variable.address, true, this);
   }
 
   declareTemporaryVariable(nextTo: Address) {
-    const address = this.#memory.allocate(this, nextTo);
+    const { address, isDirty } = this.#memory.allocate(this, nextTo);
 
     const variable = new TemporaryVariable(address);
 
     this.#tempVariables.add(variable);
 
-    return variable;
+    return { variable, isDirty };
   }
 
-  unsetTemporaryVariable(variable: TemporaryVariable) {
+  unsetTemporaryVariable(variable: TemporaryVariable, isDirty = true) {
     if (!this.#tempVariables.has(variable)) {
       throw new Error(`Temporary variable is not declared`);
     }
 
     this.#tempVariables.delete(variable);
 
-    this.#memory.free(variable.address, this);
+    this.#memory.free(variable.address, isDirty, this);
   }
 
   getVariable(name: string): Variable {
@@ -81,8 +83,8 @@ export class Scope {
   }
 
   getParentScope(): Scope {
-    if(!this.#parent) {
-      throw new Error('There are not parent Scope');
+    if (!this.#parent) {
+      throw new Error("There are not parent Scope");
     }
 
     return this.#parent;

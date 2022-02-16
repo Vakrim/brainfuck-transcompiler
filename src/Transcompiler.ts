@@ -20,37 +20,40 @@ export class Transcompiler {
   }
 
   declareVariable(name: string) {
-    this.#comment(`declare ${name}`);
+    this.comment(`declare ${name}`);
 
-    this.#scope.declareVariable(name, this.#cursorPosition);
+    const isDirty = this.#scope.declareVariable(name, this.#cursorPosition);
+    if (isDirty) {
+      this.#reset(name);
+    }
   }
 
   assignValue(name: string, value: number) {
-    this.#comment(`assign ${value} to ${name}`);
+    this.comment(`assign ${value} to ${name}`);
 
     this.#moveToVariable(name);
     this.#setValue(value);
   }
 
   writeInput(name: string) {
-    this.#comment(`write input ${name}`);
+    this.comment(`write input ${name}`);
 
     this.#moveToVariable(name);
     this.#outputBrainfuck(",");
   }
 
   readVariable(name: string) {
-    this.#comment(`read ${name}`);
+    this.comment(`read ${name}`);
 
     this.#moveToVariable(name);
     this.#readValue();
   }
 
   add(to: string, from: string) {
-    this.#comment(`add ${from} to ${to}`);
+    this.comment(`add ${from} to ${to}`);
 
     this.#moveToVariable(from);
-    const newFrom = this.#scope.declareTemporaryVariable(this.#cursorPosition);
+    const newFrom = this.#declareTemporaryVariable(this.#cursorPosition);
 
     this.#loopOf(from, () => {
       this.#moveToVariable(newFrom);
@@ -64,14 +67,12 @@ export class Transcompiler {
   }
 
   multiply(to: string, from: string) {
-    this.#comment(`multiply ${from} to ${to}`);
+    this.comment(`multiply ${from} to ${to}`);
 
     const interator = this.#copy(from);
     const interator2 = this.#copy(to);
-    const interator2swap = this.#scope.declareTemporaryVariable(
-      interator.address
-    );
-    const result = this.#scope.declareTemporaryVariable(interator.address);
+    const interator2swap = this.#declareTemporaryVariable(interator.address);
+    const result = this.#declareTemporaryVariable(interator.address);
 
     this.#loopOf(interator, () => {
       this.#loopOf(interator2, () => {
@@ -99,21 +100,44 @@ export class Transcompiler {
   popScope() {
     const variables = this.#scope.getVariablesOfThisScope();
     for (const variable of variables) {
-      this.#reset(variable);
       this.#scope.unsetVariable(variable);
     }
     this.#scope = this.#scope.getParentScope();
   }
 
+  scope(fn: () => void) {
+    this.pushScope();
+    fn();
+    this.popScope();
+  }
+
+  comment(comment: string) {
+    const safeComment = comment.replace(/[\,\.\[\]\<\>\+\-]/, " ");
+
+    this.#commentBuffer = this.#commentBuffer
+      ? [this.#commentBuffer, safeComment].join("; ")
+      : safeComment;
+  }
+
   get code() {
-    return this.#code;
+    return `${this.#code}\n${
+      this.#commentBuffer ? `${this.#commentBuffer}\n` : ""
+    }`;
+  }
+
+  #declareTemporaryVariable(nextTo: Address = this.#cursorPosition) {
+    const { variable, isDirty } = this.#scope.declareTemporaryVariable(nextTo);
+    if (isDirty) {
+      this.#reset(variable);
+    }
+    return variable;
   }
 
   #copy(from: string) {
-    this.#comment(`copy ${from} to temp`);
+    this.comment(`copy ${from} to temp`);
 
-    const newFrom = this.#scope.declareTemporaryVariable(this.#cursorPosition);
-    const newTo = this.#scope.declareTemporaryVariable(this.#cursorPosition);
+    const newFrom = this.#declareTemporaryVariable();
+    const newTo = this.#declareTemporaryVariable();
 
     this.#loopOf(from, () => {
       this.#moveToVariable(newFrom);
@@ -127,17 +151,11 @@ export class Transcompiler {
     return newTo;
   }
 
-  #comment(comment: string) {
-    this.#commentBuffer = this.#commentBuffer
-      ? [this.#commentBuffer, comment].join("; ")
-      : comment;
-  }
-
   #moveToVariable(nameOrVariable: VariableLike) {
     this.#moveTo(this.#normalizeVariable(nameOrVariable).address);
   }
 
-  #reset(name: string) {
+  #reset(name: VariableLike) {
     this.#moveToVariable(name);
     this.#outputBrainfuck("[-]");
   }

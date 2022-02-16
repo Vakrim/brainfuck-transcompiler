@@ -11,23 +11,23 @@ describe("assign variables and read", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).output).toEqual('a');
+    expect(executeCode(compiler.code).output).toEqual("a");
   });
 
   it("reads two variable", () => {
     const compiler = new Transcompiler();
 
     compiler.declareVariable("a");
-    compiler.declareVariable("b")
+    compiler.declareVariable("b");
 
     compiler.assignValue("a", 97);
     compiler.assignValue("b", 98);
-    
+
     compiler.readVariable("b");
     compiler.readVariable("a");
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).output).toEqual('ba');
+    expect(executeCode(compiler.code).output).toEqual("ba");
   });
 });

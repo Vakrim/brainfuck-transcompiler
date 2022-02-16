@@ -11,7 +11,8 @@ add a to b
 read b
 >.
 read a
->."
+>.
+"
 `;
 
 exports[`adding reads three inputs and sums them 1`] = `
@@ -25,9 +26,10 @@ write input c
 declare sum; add a to sum
 <<[->>>>+<+<<<]
 add b to sum
->[-<+>>>+<<]
+><[-]>[-<+>>>+<<]
 add c to sum
->[-<+>>+<]
+><[-]>[-<+>>+<]
 read sum
->."
+>.
+"
 `;

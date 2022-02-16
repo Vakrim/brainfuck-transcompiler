@@ -5,7 +5,8 @@ exports[`assign variables and read reads one variable 1`] = `
 declare a; assign 97 to a
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 read a
-."
+.
+"
 `;
 
 exports[`assign variables and read reads two variable 1`] = `
@@ -17,5 +18,6 @@ assign 98 to b
 read b
 .
 read a
-<."
+<.
+"
 `;

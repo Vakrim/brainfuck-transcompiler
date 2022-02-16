@@ -9,9 +9,10 @@ declare b; assign 6 to b
 multiply a to b; copy a to temp
 <[->>+>+<<<]
 copy b to temp
->[-<+>>>>+<<<]>>[->[->+<<<<+>>>]>[-<+>]<<]
+[-]>[-<+>>>>+<<<][-]>>[->[->+<<<<+>>>]>[-<+>]<<]
 read b
 <<.
 read a
->."
+>.
+"
 `;
