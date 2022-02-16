@@ -41,8 +41,6 @@ describe("adding", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(
-      executeCode(compiler.code, String.fromCharCode(10, 20, 30)).codes
-    ).toEqual([60]);
+    expect(executeCode(compiler.code, [10, 20, 30]).codes).toEqual([60]);
   });
 });

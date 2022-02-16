@@ -3,9 +3,9 @@
 exports[`adding adds two variables 1`] = `
 "
 declare a; assign 10 to a
-++++++++++
+[-]++++++++++
 declare b; assign 15 to b
->+++++++++++++++
+>[-]+++++++++++++++
 add a to b
 <[->>+<+<]
 read b

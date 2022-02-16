@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`condition handles code branching 1`] = `
+"
+declare a; write input a
+,
+declare b; copy a to temp
+[->>+>+<<<]>>>
+if a
+[<<+++++
+endif a
+>>[-]]
+read b
+<<.
+read a
+>.
+"
+`;
+
+exports[`condition handles if/else branching 1`] = `
+"
+declare a; write input a
+,
+declare b; copy a to temp
+[->>+>+<<<]>>>>+<[<<+++++>>[-]>-<]>[<<<++++++++++>>>-]
+read b
+<<<.
+read a
+>.
+"
+`;

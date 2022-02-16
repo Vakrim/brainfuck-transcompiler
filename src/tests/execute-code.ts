@@ -1,9 +1,15 @@
 import Brainfuck from "brainfuck-node";
 
-export function executeCode(code: string, input?: string) {
+export function executeCode(code: string, input?: string | number[]) {
   const brainfuck = new Brainfuck();
 
-  const { output, memory } = brainfuck.execute(code, input);
+  const normalizedInput = input
+    ? typeof input === "string"
+      ? input
+      : String.fromCharCode(...input)
+    : undefined;
+
+  const { output, memory } = brainfuck.execute(code, normalizedInput);
 
   return {
     output,
