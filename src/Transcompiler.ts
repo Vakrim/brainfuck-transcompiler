@@ -31,9 +31,8 @@ export class Transcompiler {
   assignValue(name: string, value: number) {
     this.comment(`assign ${value} to ${name}`);
 
-    this.#moveTo(name);
     this.#reset(name);
-    this.#incAtCursor(value);
+    this.#inc(name, value);
   }
 
   writeInput(name: string) {
@@ -57,19 +56,15 @@ export class Transcompiler {
     const newFrom = this.#declareTemporaryVariable(this.#cursorPosition);
 
     this.#loopOf(from, () => {
-      this.#moveTo(newFrom);
-      this.#incAtCursor();
-
-      this.#moveTo(to);
-      this.#incAtCursor();
+      this.#inc(newFrom);
+      this.#inc(to);
     });
 
     this.#scope.promoteVariable(from, newFrom, false);
   }
 
   increment(name: string, n: number) {
-    this.#moveTo(name);
-    this.#incAtCursor(n);
+    this.#inc(name, n);
   }
 
   whenever(
@@ -118,14 +113,11 @@ export class Transcompiler {
 
     this.#loopOf(interator, () => {
       this.#loopOf(interator2, () => {
-        this.#moveTo(interator2swap);
-        this.#incAtCursor();
-        this.#moveTo(result);
-        this.#incAtCursor();
+        this.#inc(interator2swap);
+        this.#inc(result);
       });
       this.#loopOf(interator2swap, () => {
-        this.#moveTo(interator2);
-        this.#incAtCursor();
+        this.#inc(interator2);
       });
     });
 
@@ -184,10 +176,8 @@ export class Transcompiler {
     const newTo = this.#declareTemporaryVariable();
 
     this.#loopOf(from, () => {
-      this.#moveTo(newFrom);
-      this.#incAtCursor();
-      this.#moveTo(newTo);
-      this.#incAtCursor();
+      this.#inc(newFrom);
+      this.#inc(newTo);
     });
 
     this.#scope.promoteVariable(from, newFrom, false);
@@ -231,7 +221,7 @@ export class Transcompiler {
 
     this.#moveTo(address);
     this.#outputBrainfuck(`[`);
-    this.#decAtCursor();
+    this.#dec(address);
     fn();
     this.#moveTo(address);
     this.#outputBrainfuck(`]`);
@@ -247,19 +237,11 @@ export class Transcompiler {
 
   #dec(addressable: Addressable, value: number = 1) {
     this.#moveTo(addressable);
-    this.#decAtCursor(value);
+    this.#outputBrainfuck(`-`.repeat(value));
   }
 
   #inc(addressable: Addressable, value: number = 1) {
     this.#moveTo(addressable);
-    this.#incAtCursor(value);
-  }
-
-  #decAtCursor(value: number = 1) {
-    this.#outputBrainfuck(`-`.repeat(value));
-  }
-
-  #incAtCursor(value: number = 1) {
     this.#outputBrainfuck(`+`.repeat(value));
   }
 
