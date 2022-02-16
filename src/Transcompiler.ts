@@ -63,7 +63,7 @@ export class Transcompiler {
       this.#inc();
     });
 
-    this.#scope.promoteVariable(from, newFrom);
+    this.#scope.promoteVariable(from, newFrom, false);
   }
 
   multiply(to: string, from: string) {
@@ -87,10 +87,10 @@ export class Transcompiler {
       });
     });
 
-    this.#scope.unsetTemporaryVariable(interator);
-    this.#scope.unsetTemporaryVariable(interator2);
-    this.#scope.unsetTemporaryVariable(interator2swap);
-    this.#scope.promoteVariable(to, result);
+    this.#scope.unsetTemporaryVariable(interator, false);
+    this.#scope.unsetTemporaryVariable(interator2, false);
+    this.#scope.unsetTemporaryVariable(interator2swap, false);
+    this.#scope.promoteVariable(to, result, false);
   }
 
   pushScope() {
@@ -100,7 +100,7 @@ export class Transcompiler {
   popScope() {
     const variables = this.#scope.getVariablesOfThisScope();
     for (const variable of variables) {
-      this.#scope.unsetVariable(variable);
+      this.#scope.unsetVariable(variable, true);
     }
     this.#scope = this.#scope.getParentScope();
   }
@@ -146,7 +146,7 @@ export class Transcompiler {
       this.#inc();
     });
 
-    this.#scope.promoteVariable(from, newFrom);
+    this.#scope.promoteVariable(from, newFrom, false);
 
     return newTo;
   }

@@ -30,7 +30,7 @@ export class Scope {
     return isDirty;
   }
 
-  unsetVariable(name: string) {
+  unsetVariable(name: string, isDirty: boolean) {
     if (!this.#variables.has(name)) {
       throw new Error(`Variable "${name}" is not declared`);
     }
@@ -39,7 +39,7 @@ export class Scope {
 
     this.#variables.delete(name);
 
-    this.#memory.free(variable.address, true, this);
+    this.#memory.free(variable.address, isDirty, this);
   }
 
   declareTemporaryVariable(nextTo: Address) {
@@ -52,7 +52,7 @@ export class Scope {
     return { variable, isDirty };
   }
 
-  unsetTemporaryVariable(variable: TemporaryVariable, isDirty = true) {
+  unsetTemporaryVariable(variable: TemporaryVariable, isDirty: boolean) {
     if (!this.#tempVariables.has(variable)) {
       throw new Error(`Temporary variable is not declared`);
     }
@@ -90,13 +90,17 @@ export class Scope {
     return this.#parent;
   }
 
-  promoteVariable(name: string, temp: TemporaryVariable) {
+  promoteVariable(
+    name: string,
+    temp: TemporaryVariable,
+    isPreviousCellUsedByVariableDirty: boolean
+  ) {
     const scope = this.getScopeOfVariable(name);
 
     scope.getVariable(name);
-    scope.unsetVariable(name);
+    scope.unsetVariable(name, isPreviousCellUsedByVariableDirty);
 
-    this.unsetTemporaryVariable(temp);
+    this.unsetTemporaryVariable(temp, true);
     scope.declareVariable(name, temp.address);
   }
 }

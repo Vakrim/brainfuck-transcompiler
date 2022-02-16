@@ -26,9 +26,9 @@ write input c
 declare sum; add a to sum
 <<[->>>>+<+<<<]
 add b to sum
-><[-]>[-<+>>>+<<]
+>[-<+>>>+<<]
 add c to sum
-><[-]>[-<+>>+<]
+>[-<+>>+<]
 read sum
 >.
 "

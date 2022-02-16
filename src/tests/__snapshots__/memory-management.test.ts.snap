@@ -22,9 +22,7 @@ assign 2 to b
 >++
 add a to b
 <[->>+<+<]
-declare b
-[-]
-declare c
+declare b; declare c
 >[-]
 "
 `;
@@ -35,27 +33,19 @@ declare sum; declare term; assign 1 to term
 >+
 add term to sum
 [->+<<+>]
-declare term
-[-]
-assign 2 to term
+declare term; assign 2 to term
 ++
 add term to sum
 >[-]<[->+<<+>]
-declare term
-[-]
-assign 3 to term
+declare term; assign 3 to term
 +++
 add term to sum
 >[-]<[->+<<+>]
-declare term
-[-]
-assign 4 to term
+declare term; assign 4 to term
 ++++
 add term to sum
 >[-]<[->+<<+>]
-declare term
-[-]
-assign 5 to term
+declare term; assign 5 to term
 +++++
 add term to sum
 >[-]<[->+<<+>]
