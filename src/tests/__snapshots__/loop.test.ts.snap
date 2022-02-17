@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loop handles while loop 1`] = `
+"
+declare a; declare sum; write input a
+,
+while a
+[
+add a to sum
+[->>+<+<]
+write input a
+>>,]
+end while a; read sum
+<.
+"
+`;

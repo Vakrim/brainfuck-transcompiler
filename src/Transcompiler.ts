@@ -86,6 +86,7 @@ export class Transcompiler {
       const elseFlag = this.#declareTemporaryVariable(conditionCopy);
       this.#inc(elseFlag);
       this.#moveTo(conditionCopy);
+      this.comment(`if ${conditionName}`);
       this.#outputBrainfuck(`[`);
       this.scope(ifPostitive);
       this.#reset(conditionCopy);
@@ -93,9 +94,11 @@ export class Transcompiler {
       this.#moveTo(conditionCopy);
       this.#outputBrainfuck(`]`);
       this.#moveTo(elseFlag);
+      this.comment(`else ${conditionName}`);
       this.#outputBrainfuck(`[`);
       this.scope(ifNegative);
       this.#dec(elseFlag);
+      this.comment(`endif ${conditionName}`);
       this.#outputBrainfuck(`]`);
       this.#scope.unsetTemporaryVariable(elseFlag, false);
     }
@@ -125,6 +128,16 @@ export class Transcompiler {
     this.#scope.unsetTemporaryVariable(interator2, false);
     this.#scope.unsetTemporaryVariable(interator2swap, false);
     this.#scope.promoteVariable(to, result, false);
+  }
+
+  while(name: string, fn: () => void) {
+    this.comment(`while ${name}`);
+    this.#moveTo(name);
+    this.#outputBrainfuck(`[`);
+    this.scope(fn);
+    this.#moveTo(name);
+    this.#outputBrainfuck(`]`);
+    this.comment(`end while ${name}`);
   }
 
   pushScope() {

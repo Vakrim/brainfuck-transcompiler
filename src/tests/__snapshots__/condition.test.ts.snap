@@ -22,7 +22,13 @@ exports[`condition handles if/else branching 1`] = `
 declare a; write input a
 ,
 declare b; copy a to temp
-[->>+>+<<<]>>>>+<[<<+++++>>[-]>-<]>[<<<++++++++++>>>-]
+[->>+>+<<<]>>>>+<
+if a
+[<<+++++>>[-]>-<]>
+else a
+[<<<++++++++++>>>-
+endif a
+]
 read b
 <<<.
 read a
