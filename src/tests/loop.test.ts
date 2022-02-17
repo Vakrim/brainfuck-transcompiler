@@ -25,6 +25,28 @@ describe("loop", () => {
     expect(executeCode(compiler.code, [2, 5, 10, 0]).codes).toEqual([17]);
   });
 
+  it("doesn't memory leak on one loop", () => {
+    const compiler = new Transcompiler();
+
+    compiler.declareVariable("i");
+    compiler.declareVariable("product");
+    compiler.assignValue("i", 3);
+    compiler.assignValue("product", 2);
+
+    compiler.while("i", () => {
+      compiler.multiply("product", "i");
+      compiler.assignValue("i", 0);
+    });
+
+    compiler.readVariable("product");
+
+    expect(compiler.code).toMatchSnapshot();
+
+    expect(executeCode(compiler.code).memory).toEqual([0, 6, 0, 0, 0]);
+
+    expect(executeCode(compiler.code).codes).toEqual([6]);
+  });
+
   it("handles while loop", () => {
     const compiler = new Transcompiler();
 
@@ -44,7 +66,7 @@ describe("loop", () => {
 
     expect(executeCode(compiler.code, [0]).codes).toEqual([1]);
 
-    expect(executeCode(compiler.code, [2, 0]).codes).toEqual([2]);
+    expect(executeCode(compiler.code, [3, 0]).codes).toEqual([3]);
 
     expect(executeCode(compiler.code, [2, 5, 0]).codes).toEqual([10]);
 

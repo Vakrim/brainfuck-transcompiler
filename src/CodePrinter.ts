@@ -11,7 +11,7 @@ export class CodePrinter {
     return this.#code
       .map((op) => {
         if ("code" in op) {
-          return `${" ".repeat(indentation)}${[
+          return `${" ".repeat(indentation + op.level - 1)}${[
             op.code,
             this.#sanitizeComment(op.name),
           ]
@@ -32,6 +32,7 @@ export class CodePrinter {
 interface Operation {
   code: string;
   name: string;
+  level: number;
 }
 
 interface ScopeOperation {

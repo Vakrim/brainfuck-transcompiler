@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`condition handles code branching 1`] = `
-"declare a
-,  write input a
-declare b
+",  write input a
 [->>+>+<<<]  copy a to temp
 >>>[  if a
   <<+++++  increment b with 5
@@ -13,9 +11,7 @@ declare b
 `;
 
 exports[`condition handles if/else branching 1`] = `
-"declare a
-,  write input a
-declare b
+",  write input a
 [->>+>+<<<]  copy a to temp
 >>>>+<[  if a
   <<+++++  increment b with 5

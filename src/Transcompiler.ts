@@ -64,14 +64,7 @@ export class Transcompiler {
         this.#inc(to);
       });
 
-      if (this.#promotingBlockers) {
-        this.#loopOf(newFrom, () => {
-          this.#inc(from);
-        });
-        this.#scope.unsetTemporaryVariable(newFrom, false);
-      } else {
-        this.#scope.promoteVariable(from, newFrom, false);
-      }
+      this.#promoteOrResetVariable(from, newFrom, false);
     });
   }
 
@@ -129,32 +122,23 @@ export class Transcompiler {
   multiply(to: string, from: string) {
     this.operation(`multiply ${from} to ${to}`, () => {
       const interator = this.#copy(from);
-      const interator2 = this.#copy(to);
       const interator2swap = this.#declareTemporaryVariable(interator.address);
       const result = this.#declareTemporaryVariable(interator.address);
 
       this.#loopOf(interator, () => {
-        this.#loopOf(interator2, () => {
+        this.#loopOf(to, () => {
           this.#inc(interator2swap);
           this.#inc(result);
         });
         this.#loopOf(interator2swap, () => {
-          this.#inc(interator2);
+          this.#inc(to);
         });
       });
 
       this.#scope.unsetTemporaryVariable(interator, false);
-      this.#scope.unsetTemporaryVariable(interator2, false);
-      this.#scope.unsetTemporaryVariable(interator2swap, false);
+      this.#scope.unsetTemporaryVariable(interator2swap, true);
 
-      if (this.#promotingBlockers) {
-        this.#loopOf(result, () => {
-          this.#inc(to);
-        });
-        this.#scope.unsetTemporaryVariable(result, false);
-      } else {
-        this.#scope.promoteVariable(to, result, false);
-      }
+      this.#promoteOrResetVariable(to, result, true);
     });
   }
 
@@ -174,8 +158,8 @@ export class Transcompiler {
 
   pushScope() {
     this.#code.push({
-      scope: 'open'
-    })
+      scope: "open",
+    });
     this.#scope = new Scope(this.#scope, this.#memory);
   }
 
@@ -188,8 +172,8 @@ export class Transcompiler {
     }
     this.#scope = this.#scope.getParentScope();
     this.#code.push({
-      scope: 'close'
-    })
+      scope: "close",
+    });
   }
 
   scope(fn: () => void) {
@@ -205,22 +189,46 @@ export class Transcompiler {
   }
 
   operation(name: string, fn: () => void) {
-    if (this.#codeBlockNamesStack.length > 0 && this.#currentCodeBlock) {
+    if (this.#codeBlockNamesStack.length > 0) {
       this.#code.push({
         name: this.#codeBlockNamesStack[this.#codeBlockNamesStack.length - 1],
         code: this.#currentCodeBlock,
+        level: this.#codeBlockNamesStack.length,
       });
       this.#currentCodeBlock = "";
     }
 
     this.#codeBlockNamesStack.push(name);
     fn();
-    this.#code.push({
-      name,
-      code: this.#currentCodeBlock,
-    });
-    this.#currentCodeBlock = "";
+    if (this.#currentCodeBlock) {
+      this.#code.push({
+        name,
+        code: this.#currentCodeBlock,
+        level: this.#codeBlockNamesStack.length,
+      });
+      this.#currentCodeBlock = "";
+    }
     this.#codeBlockNamesStack.pop();
+  }
+
+  #promoteOrResetVariable(
+    name: string,
+    temporaryWithValue: TemporaryVariable,
+    isDirty: boolean
+  ) {
+    if (this.#promotingBlockers) {
+      this.operation(`reset ${name} value`, () => {
+        if (isDirty) {
+          this.#reset(name);
+        }
+        this.#loopOf(temporaryWithValue, () => {
+          this.#inc(name);
+        });
+        this.#scope.unsetTemporaryVariable(temporaryWithValue, false);
+      });
+    } else {
+      this.#scope.promoteVariable(name, temporaryWithValue, isDirty);
+    }
   }
 
   #declareTemporaryVariable(nextTo: Addressable = this.#cursorPosition) {
@@ -243,14 +251,7 @@ export class Transcompiler {
         this.#inc(newTo);
       });
 
-      if (this.#promotingBlockers) {
-        this.#loopOf(newFrom, () => {
-          this.#inc(from);
-        });
-        this.#scope.unsetTemporaryVariable(newFrom, false);
-      } else {
-        this.#scope.promoteVariable(from, newFrom, false);
-      }
+      this.#promoteOrResetVariable(from, newFrom, false);
     });
 
     return newTo;

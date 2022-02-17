@@ -39,15 +39,15 @@ export class Memory {
 
   #findFreeAdrress(nextTo: Address) {
     for (let searchRange = 0; ; searchRange++) {
-      if (!this.#tape.has((nextTo + searchRange) as Address)) {
-        return (nextTo + searchRange) as Address;
-      }
-
       if (
         nextTo - searchRange >= 0 &&
         !this.#tape.has((nextTo - searchRange) as Address)
       ) {
         return (nextTo - searchRange) as Address;
+      }
+
+      if (!this.#tape.has((nextTo + searchRange) as Address)) {
+        return (nextTo + searchRange) as Address;
       }
     }
   }

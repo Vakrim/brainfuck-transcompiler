@@ -1,26 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`loop doesn't memory leak on one loop 1`] = `
+"[-]+++  assign 3 to i
+>[-]++  assign 2 to product
+<[  while i
+  multiply i to product
+   [->>+>+<<<]  copy i to temp
+    >>[-<<+>>]  reset i value
+  >[-<<[->+>>+<<<]>[-<+>]>]  multiply i to product
+   <<[-]>>>[-<<<+>>>]  reset product value
+  <<<<[-]  assign 0 to i
+]  endwhile i
+>.  read product"
+`;
+
 exports[`loop handles while loop 1`] = `
-"declare a
-declare sum
-,  write input a
+",  write input a
 [  while a
-  [->>+<+<]>>[-<<+>>]  add a to sum
+  [->>+<+<]  add a to sum
+   >>[-<<+>>]  reset a value
   <<,  write input a
 ]  endwhile a
 >.  read sum"
 `;
 
 exports[`loop handles while loop 2`] = `
-"declare a
-declare product
->[-]+  assign 1 to product
+">[-]+  assign 1 to product
 <,  write input a
 [  while a
-  [->>+>+<<<]>>[-<<+>>]  copy a to temp
-  <[->+>>+<<<]>[-<+>]  copy product to temp
-  >[->[-<<+>>>+<]<<[->>+<<]>]>>[-<<<<+>>>>]  multiply a to product
-  <<<<<,  write input a
+  multiply a to product
+   [->>+>+<<<]  copy a to temp
+    >>[-<<+>>]  reset a value
+  >[-<<[->+>>+<<<]>[-<+>]>]  multiply a to product
+   <<[-]>>>[-<<<+>>>]  reset product value
+  <<<<,  write input a
 ]  endwhile a
 >.  read product"
 `;

@@ -107,7 +107,7 @@ export class Scope {
   deepVerifyBeforeDiscard() {
     this.verifyBeforeDiscard();
 
-    if(this.#parent) {
+    if (this.#parent) {
       this.#parent.deepVerifyBeforeDiscard();
     }
   }

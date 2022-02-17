@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`adding adds two variables 1`] = `
-"declare a
-[-]++++++++++  assign 10 to a
-declare b
+"[-]++++++++++  assign 10 to a
 >[-]+++++++++++++++  assign 15 to b
 <[->>+<+<]  add a to b
 >.  read b
@@ -11,13 +9,9 @@ declare b
 `;
 
 exports[`adding reads three inputs and sums them 1`] = `
-"declare a
-declare b
-declare c
-,  write input a
+",  write input a
 >,  write input b
 >,  write input c
-declare sum
 <<[->>>>+<+<<<]  add a to sum
 >[-<+>>>+<<]  add b to sum
 >[-<+>>+<]  add c to sum
