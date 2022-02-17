@@ -1,18 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`multiplying multiplies two variables 1`] = `
-"
-declare a; assign 8 to a
-[-]++++++++
-declare b; assign 6 to b
->[-]++++++
-multiply a to b; copy a to temp
-<[->>+>+<<<]
-copy b to temp
->[-<+>>>>+<<<]>>[->[->+<<<<+>>>]>[-<+>]<<]
-read b
-<<.
-read a
->.
-"
+"declare a
+[-]++++++++  assign 8 to a
+declare b
+>[-]++++++  assign 6 to b
+<[->>+>+<<<]  copy a to temp
+>[-<+>>>>+<<<]  copy b to temp
+>>[->[->+<<<<+>>>]>[-<+>]<<]  multiply a to b
+<<.  read b
+>.  read a"
 `;

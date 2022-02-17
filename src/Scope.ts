@@ -103,4 +103,20 @@ export class Scope {
     this.unsetTemporaryVariable(temp, true);
     scope.declareVariable(name, temp.address);
   }
+
+  deepVerifyBeforeDiscard() {
+    this.verifyBeforeDiscard();
+
+    if(this.#parent) {
+      this.#parent.deepVerifyBeforeDiscard();
+    }
+  }
+
+  verifyBeforeDiscard() {
+    if (this.#tempVariables.size > 0) {
+      throw new Error(
+        `Can't discard scope when temporary variables are still allocated`
+      );
+    }
+  }
 }

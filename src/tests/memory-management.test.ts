@@ -15,15 +15,11 @@ describe("memory management", () => {
       compiler.assignValue("c", 3);
 
       expect(executeCode(compiler.code).memory).toEqual([1, 2, 3]);
-      compiler.comment(
-        `Don't clean memory on undeclaring variables, but mark cell as dirty`
-      );
     });
 
     expect(executeCode(compiler.code).memory).toEqual([1, 2, 3]);
 
     compiler.declareVariable("d");
-    compiler.comment(`Clean dirty cell before using`);
 
     expect(executeCode(compiler.code).memory).toEqual([1, 2, 0]);
 

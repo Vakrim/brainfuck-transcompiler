@@ -1,53 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`memory management declare variables and clean memory after closing scope 1`] = `
-"
-declare a; declare b; assign 1 to a
-[-]+
-assign 2 to b
->[-]++
-declare c; assign 3 to c
->[-]+++
-Don't clean memory on undeclaring variables  but mark cell as dirty; declare d
-[-]
-Clean dirty cell before using
-"
+"declare a
+declare b
+[-]+  assign 1 to a
+>[-]++  assign 2 to b
+  declare c
+  >[-]+++  assign 3 to c
+[-]  declare d"
 `;
 
 exports[`memory management declares temporary variable 1`] = `
-"
-declare a; declare b; assign 1 to a
-[-]+
-assign 2 to b
->[-]++
-add a to b
-<[->>+<+<]
-declare b; declare c
->[-]
-"
+"declare a
+  declare b
+  [-]+  assign 1 to a
+  >[-]++  assign 2 to b
+  <[->>+<+<]  add a to b
+declare b
+>[-]  declare c"
 `;
 
 exports[`memory management sums list of numbers declared in scope 1`] = `
-"
-declare sum; declare term; assign 1 to term
->[-]+
-add term to sum
-[->+<<+>]
-declare term; assign 2 to term
-[-]++
-add term to sum
->[-]<[->+<<+>]
-declare term; assign 3 to term
-[-]+++
-add term to sum
->[-]<[->+<<+>]
-declare term; assign 4 to term
-[-]++++
-add term to sum
->[-]<[->+<<+>]
-declare term; assign 5 to term
-[-]+++++
-add term to sum
->[-]<[->+<<+>]
-"
+"declare sum
+  declare term
+  >[-]+  assign 1 to term
+  [->+<<+>]  add term to sum
+  declare term
+  [-]++  assign 2 to term
+  >[-]<[->+<<+>]  add term to sum
+  declare term
+  [-]+++  assign 3 to term
+  >[-]<[->+<<+>]  add term to sum
+  declare term
+  [-]++++  assign 4 to term
+  >[-]<[->+<<+>]  add term to sum
+  declare term
+  [-]+++++  assign 5 to term
+  >[-]<[->+<<+>]  add term to sum"
 `;
