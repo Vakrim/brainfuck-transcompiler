@@ -5,10 +5,8 @@ exports[`loop doesn't memory leak on one loop 1`] = `
 >[-]++  assign 2 to product
 <[  while i
   multiply i to product
-   [->>+>+<<<]  copy i to temp
-    >>[-<<+>>]  reset i value
-  >[-<<[->+>>+<<<]>[-<+>]>]  multiply i to product
-   <<[-]>>>[-<<<+>>>]  reset product value
+   [->>+>+<<<]>>[-<<+>>]  copy i to temp
+  >[-<<[->+>>+<<<]>[-<+>]>]<[-]<[-]>>>[-<<<+>>>]  multiply i to product
   <<<<[-]  assign 0 to i
 ]  endwhile i
 >.  read product"
@@ -17,8 +15,7 @@ exports[`loop doesn't memory leak on one loop 1`] = `
 exports[`loop handles while loop 1`] = `
 ",  write input a
 [  while a
-  [->>+<+<]  add a to sum
-   >>[-<<+>>]  reset a value
+  [->>+<+<]>>[-<<+>>]  add a to sum
   <<,  write input a
 ]  endwhile a
 >.  read sum"
@@ -29,10 +26,8 @@ exports[`loop handles while loop 2`] = `
 <,  write input a
 [  while a
   multiply a to product
-   [->>+>+<<<]  copy a to temp
-    >>[-<<+>>]  reset a value
-  >[-<<[->+>>+<<<]>[-<+>]>]  multiply a to product
-   <<[-]>>>[-<<<+>>>]  reset product value
+   [->>+>+<<<]>>[-<<+>>]  copy a to temp
+  >[-<<[->+>>+<<<]>[-<+>]>]<[-]<[-]>>>[-<<<+>>>]  multiply a to product
   <<<<,  write input a
 ]  endwhile a
 >.  read product"

@@ -1,4 +1,4 @@
-declare module "brainfuck-node" {
+declare module 'brainfuck-node' {
   export default class Brainfuck {
     execute(
       code: string,

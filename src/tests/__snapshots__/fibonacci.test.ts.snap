@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fibonacci returns values of sequence 1`] = `
+"[-]++++++++++  assign 10 to i
+>[-]  assign 0 to prev
+>[-]+  assign 1 to current
+<.  read prev
+>.  read current
+<<--  decrement i with 2
+[  while i
+  >>[->>+<+<]>>[-<<+>>]  add current to sum
+  <<<[->>>+<+<<]>>>[-<<<+>>>]  add prev to sum
+  <.  read sum
+  <<[-]  assign 0 to prev
+  >[->>+<<<+>]>>[-<<+>>]  add current to prev
+  <<[-]  assign 0 to current
+  >[->+<<+>]>[-<+>]  add sum to current
+  <<<<-  decrement i with 1
+>>>[-]<<<]  endwhile i"
+`;

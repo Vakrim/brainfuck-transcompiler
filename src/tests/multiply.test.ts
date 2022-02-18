@@ -1,59 +1,54 @@
-import { Transcompiler } from "../Transcompiler";
-import { executeCode } from "./execute-code";
+import { Transcompiler } from '../Transcompiler';
+import { executeCode } from './execute-code';
 
-describe("multiplying", () => {
-  it("multiplies two variables", () => {
+describe('multiplying', () => {
+  it('multiplies two variables', () => {
     const compiler = new Transcompiler();
 
-    compiler.declareVariable("a");
-    compiler.assignValue("a", 8);
-    compiler.declareVariable("b");
-    compiler.assignValue("b", 6);
+    compiler.declareVariable('a');
+    compiler.assignValue('a', 8);
+    compiler.declareVariable('b');
+    compiler.assignValue('b', 6);
 
-    compiler.multiply("b", "a");
+    compiler.multiply('b', 'a');
 
-    compiler.readVariable("b");
-    compiler.readVariable("a");
+    compiler.readVariable('b');
+    compiler.readVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
     expect(executeCode(compiler).codes).toEqual([48, 8]);
   });
 
-  it("multiplies two variables without memory leak", () => {
+  it('multiplies two variables without memory leak', () => {
     const compiler = new Transcompiler();
 
-    compiler.declareVariable("a");
-    compiler.assignValue("a", 2);
-    compiler.declareVariable("b");
-    compiler.assignValue("b", 3);
+    compiler.declareVariable('a');
+    compiler.assignValue('a', 2);
+    compiler.declareVariable('b');
+    compiler.assignValue('b', 3);
 
-    compiler.multiply("b", "a");
+    compiler.multiply('b', 'a');
 
-    compiler.readVariable("a");
-    compiler.readVariable("b");
+    compiler.readVariable('a');
+    compiler.readVariable('b');
 
     expect(compiler.code).toMatchSnapshot();
 
     expect(executeCode(compiler).codes).toEqual([2, 6]);
 
     expect(executeCode(compiler).memoryAllocation).toEqual([
-      0,
       {
-        dirty: 3,
-      },
-      {
-        name: "a",
+        name: 'a',
         value: 2,
       },
-      0,
       {
-        dirty: 0,
-      },
-      {
-        name: "b",
+        name: 'b',
         value: 6,
       },
+      0,
+      0,
+      0,
     ]);
   });
 });

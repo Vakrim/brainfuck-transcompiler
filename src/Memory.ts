@@ -1,26 +1,22 @@
-import { Address } from "./Address";
-import { Scope } from "./Scope";
+import { Address } from './Address';
+import { Scope } from './Scope';
 
 export class Memory {
   #tape: Map<Address, Scope>;
-  #dirties: Set<Address>;
 
   constructor() {
     this.#tape = new Map();
-    this.#dirties = new Set();
   }
 
-  allocate(scope: Scope, nextTo: Address): Allocation {
+  allocate(scope: Scope, nextTo: Address): Address {
     const address = this.#findFreeAdrress(nextTo);
-    const isDirty = this.#dirties.has(address);
 
     this.#tape.set(address, scope);
-    this.#dirties.delete(address);
 
-    return { address, isDirty };
+    return address;
   }
 
-  free(address: Address, isDirty: boolean, scope: Scope) {
+  free(address: Address, scope: Scope) {
     const cell = this.#tape.get(address);
     if (!cell) {
       throw new Error(`Cell with address = ${address} is not allocated`);
@@ -31,9 +27,6 @@ export class Memory {
       );
     }
 
-    if (isDirty) {
-      this.#dirties.add(address);
-    }
     this.#tape.delete(address);
   }
 
@@ -51,13 +44,4 @@ export class Memory {
       }
     }
   }
-
-  get dirties() {
-    return [...this.#dirties];
-  }
-}
-
-interface Allocation {
-  address: Address;
-  isDirty: boolean;
 }

@@ -1,21 +1,21 @@
-import { Transcompiler } from "../Transcompiler";
-import { executeCode } from "./execute-code";
+import { Transcompiler } from '../Transcompiler';
+import { executeCode } from './execute-code';
 
-describe("condition", () => {
-  it("handles code branching", () => {
+describe('condition', () => {
+  it('handles code branching', () => {
     const compiler = new Transcompiler();
 
-    compiler.declareVariable("a");
-    compiler.writeInput("a");
+    compiler.declareVariable('a');
+    compiler.writeInput('a');
 
-    compiler.declareVariable("b");
+    compiler.declareVariable('b');
 
-    compiler.whenever("a", () => {
-      compiler.increment("b", 5);
+    compiler.whenever('a', () => {
+      compiler.increment('b', 5);
     });
 
-    compiler.readVariable("b");
-    compiler.readVariable("a");
+    compiler.readVariable('b');
+    compiler.readVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -26,26 +26,26 @@ describe("condition", () => {
     expect(executeCode(compiler, [8]).codes).toEqual([5, 8]);
   });
 
-  it("handles if/else branching", () => {
+  it('handles if/else branching', () => {
     const compiler = new Transcompiler();
 
-    compiler.declareVariable("a");
-    compiler.writeInput("a");
+    compiler.declareVariable('a');
+    compiler.writeInput('a');
 
-    compiler.declareVariable("b");
+    compiler.declareVariable('b');
 
     compiler.whenever(
-      "a",
+      'a',
       () => {
-        compiler.increment("b", 5);
+        compiler.increment('b', 5);
       },
       () => {
-        compiler.increment("b", 10);
+        compiler.increment('b', 10);
       }
     );
 
-    compiler.readVariable("b");
-    compiler.readVariable("a");
+    compiler.readVariable('b');
+    compiler.readVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 

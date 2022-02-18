@@ -10,22 +10,22 @@ export class CodePrinter {
 
     return this.#code
       .map((op) => {
-        if ("code" in op) {
-          return `${" ".repeat(indentation + op.level - 1)}${[
+        if ('code' in op) {
+          return `${' '.repeat(indentation + op.level - 1)}${[
             op.code,
             this.#sanitizeComment(op.name),
           ]
             .filter(Boolean)
-            .join("  ")}`;
+            .join('  ')}`;
         }
-        indentation += op.scope === "open" ? 2 : -2;
+        indentation += op.scope === 'open' ? 2 : -2;
       })
       .filter(Boolean)
-      .join("\n");
+      .join('\n');
   }
 
   #sanitizeComment(comment: string) {
-    return comment.replace(/[\,\.\[\]\<\>\+\-]/, " ");
+    return comment.replace(/[\,\.\[\]\<\>\+\-]/, ' ');
   }
 }
 
@@ -36,7 +36,7 @@ interface Operation {
 }
 
 interface ScopeOperation {
-  scope: "open" | "close";
+  scope: 'open' | 'close';
 }
 
 export type CodeOperation = Operation | ScopeOperation;

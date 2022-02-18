@@ -1,7 +1,7 @@
-import { Address } from "./Address";
-import { Memory } from "./Memory";
-import { TemporaryVariable } from "./TemporaryVariable";
-import { Variable } from "./Variable";
+import { Address } from './Address';
+import { Memory } from './Memory';
+import { TemporaryVariable } from './TemporaryVariable';
+import { Variable } from './Variable';
 
 export class Scope {
   #parent: Scope | null;
@@ -21,16 +21,14 @@ export class Scope {
       throw new Error(`Can't redeclare variable with name "${name}"`);
     }
 
-    const { address, isDirty } = this.#memory.allocate(this, nextTo);
+    const address = this.#memory.allocate(this, nextTo);
 
     const variable = new Variable(name, address, this);
 
     this.#variables.set(name, variable);
-
-    return isDirty;
   }
 
-  unsetVariable(name: string, isDirty: boolean) {
+  unsetVariable(name: string) {
     if (!this.#variables.has(name)) {
       throw new Error(`Variable "${name}" is not declared`);
     }
@@ -39,27 +37,27 @@ export class Scope {
 
     this.#variables.delete(name);
 
-    this.#memory.free(variable.address, isDirty, this);
+    this.#memory.free(variable.address, this);
   }
 
   declareTemporaryVariable(nextTo: Address) {
-    const { address, isDirty } = this.#memory.allocate(this, nextTo);
+    const address = this.#memory.allocate(this, nextTo);
 
     const variable = new TemporaryVariable(address);
 
     this.#tempVariables.add(variable);
 
-    return { variable, isDirty };
+    return variable;
   }
 
-  unsetTemporaryVariable(variable: TemporaryVariable, isDirty: boolean) {
+  unsetTemporaryVariable(variable: TemporaryVariable) {
     if (!this.#tempVariables.has(variable)) {
       throw new Error(`Temporary variable is not declared`);
     }
 
     this.#tempVariables.delete(variable);
 
-    this.#memory.free(variable.address, isDirty, this);
+    this.#memory.free(variable.address, this);
   }
 
   getVariable(name: string): Variable {
@@ -84,7 +82,7 @@ export class Scope {
 
   getParentScope(): Scope {
     if (!this.#parent) {
-      throw new Error("There are not parent Scope");
+      throw new Error('There are not parent Scope');
     }
 
     return this.#parent;
@@ -92,20 +90,6 @@ export class Scope {
 
   hasParentScope(): boolean {
     return !!this.#parent;
-  }
-
-  promoteVariable(
-    name: string,
-    temp: TemporaryVariable,
-    isPreviousCellUsedByVariableDirty: boolean
-  ) {
-    const scope = this.getScopeOfVariable(name);
-
-    scope.getVariable(name);
-    scope.unsetVariable(name, isPreviousCellUsedByVariableDirty);
-
-    this.unsetTemporaryVariable(temp, true);
-    scope.declareVariable(name, temp.address);
   }
 
   deepVerifyBeforeDiscard() {

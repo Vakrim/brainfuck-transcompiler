@@ -1,6 +1,5 @@
-import { Address } from "./Address";
-import { Scope } from "./Scope";
-import { Transcompiler } from "./Transcompiler";
+import { Scope } from './Scope';
+import { Transcompiler } from './Transcompiler';
 
 export class MemoryAllocationSnap {
   #topScope: Scope;
@@ -14,8 +13,6 @@ export class MemoryAllocationSnap {
 
     this.#printSnapScope(this.#topScope, allocations);
 
-    const dirties = new Set(this.#topScope.memory.dirties);
-
     return memorySnap.map((value, address) => {
       let allocation = allocations[address];
 
@@ -26,12 +23,8 @@ export class MemoryAllocationSnap {
         };
       }
 
-      if (dirties.has(address as Address)) {
-        return { dirty: value };
-      }
-
       if (value !== 0) {
-        throw new Error("Unexpected non dirty, non zero cell");
+        throw new Error("Unexpected non zero cell");
       }
       return value;
     });
@@ -48,13 +41,6 @@ export class MemoryAllocationSnap {
       this.#printSnapScope(scope.getParentScope(), allocations);
     }
   }
-}
-
-export function getMemoryAllocationSnap(
-  transcompiler: Transcompiler,
-  memorySnap: number[]
-) {
-  return new MemoryAllocationSnap(transcompiler).printSnap(memorySnap);
 }
 
 export const scopeSymbol = Symbol();

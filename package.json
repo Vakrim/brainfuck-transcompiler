@@ -16,5 +16,8 @@
   "scripts": {
     "test": "jest --watch -u",
     "format": "prettier -w src"
+  },
+  "prettier": {
+    "singleQuote": true
   }
 }

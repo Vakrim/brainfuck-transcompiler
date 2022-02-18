@@ -4,25 +4,30 @@ exports[`memory management declare variables and clean memory after closing scop
 "[-]+  assign 1 to a
 >[-]++  assign 2 to b
   >[-]+++  assign 3 to c
-[-]  declare d"
+[-]"
 `;
 
 exports[`memory management declares temporary variable 1`] = `
 "  [-]+  assign 1 to a
   >[-]++  assign 2 to b
-  <[->>+<+<]  add a to b
->[-]  declare c"
+  <[->>+<+<]>>[-<<+>>]  add a to b
+<[-]  declare b"
 `;
 
 exports[`memory management sums list of numbers declared in scope 1`] = `
 "  >[-]+  assign 1 to term
-  [->+<<+>]  add term to sum
+  [->+<<+>]>[-<+>]  add term to sum
+  <[-]  declare term
   [-]++  assign 2 to term
-  >[-]<[->+<<+>]  add term to sum
+  [->+<<+>]>[-<+>]  add term to sum
+  <[-]  declare term
   [-]+++  assign 3 to term
-  >[-]<[->+<<+>]  add term to sum
+  [->+<<+>]>[-<+>]  add term to sum
+  <[-]  declare term
   [-]++++  assign 4 to term
-  >[-]<[->+<<+>]  add term to sum
+  [->+<<+>]>[-<+>]  add term to sum
+  <[-]  declare term
   [-]+++++  assign 5 to term
-  >[-]<[->+<<+>]  add term to sum"
+  [->+<<+>]>[-<+>]  add term to sum
+<[-]"
 `;

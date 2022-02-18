@@ -3,9 +3,10 @@
 exports[`scopes assign memory after inner scope when usign temporary variables in outer scope 1`] = `
 "[-]+++  assign 3 to a
   >[-]+++++  assign 5 to b
-  <[->>+<+<]  add a to b
-  >.  read b
-  >.  read a"
+  <[->>+<+<]>>[-<<+>>]  add a to b
+  <.  read b
+  <.  read a
+>[-]"
 `;
 
 exports[`scopes creates scope assign variable 1`] = `

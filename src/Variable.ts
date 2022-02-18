@@ -1,5 +1,5 @@
-import { Address } from "./Address";
-import { Scope } from "./Scope";
+import { Address } from './Address';
+import { Scope } from './Scope';
 
 export class Variable {
   #name: string;

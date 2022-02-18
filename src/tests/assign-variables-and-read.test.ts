@@ -1,33 +1,33 @@
-import { Transcompiler } from "../Transcompiler";
-import { executeCode } from "./execute-code";
+import { Transcompiler } from '../Transcompiler';
+import { executeCode } from './execute-code';
 
-describe("assign variables and read", () => {
-  it("reads one variable", () => {
+describe('assign variables and read', () => {
+  it('reads one variable', () => {
     const compiler = new Transcompiler();
 
-    compiler.declareVariable("a");
-    compiler.assignValue("a", 97);
-    compiler.readVariable("a");
+    compiler.declareVariable('a');
+    compiler.assignValue('a', 97);
+    compiler.readVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler).output).toEqual("a");
+    expect(executeCode(compiler).output).toEqual('a');
   });
 
-  it("reads two variable", () => {
+  it('reads two variable', () => {
     const compiler = new Transcompiler();
 
-    compiler.declareVariable("a");
-    compiler.declareVariable("b");
+    compiler.declareVariable('a');
+    compiler.declareVariable('b');
 
-    compiler.assignValue("a", 97);
-    compiler.assignValue("b", 98);
+    compiler.assignValue('a', 97);
+    compiler.assignValue('b', 98);
 
-    compiler.readVariable("b");
-    compiler.readVariable("a");
+    compiler.readVariable('b');
+    compiler.readVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler).output).toEqual("ba");
+    expect(executeCode(compiler).output).toEqual('ba');
   });
 });

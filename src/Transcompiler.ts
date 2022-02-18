@@ -1,17 +1,16 @@
-import { Address } from "./Address";
-import { CodePrinter, CodeOperation } from "./CodePrinter";
-import { Memory } from "./Memory";
-import { scopeSymbol } from "./MemoryAllocationSnap";
-import { Scope } from "./Scope";
-import { TemporaryVariable } from "./TemporaryVariable";
-import { Variable } from "./Variable";
+import { Address } from './Address';
+import { CodePrinter, CodeOperation } from './CodePrinter';
+import { Memory } from './Memory';
+import { scopeSymbol } from './MemoryAllocationSnap';
+import { Scope } from './Scope';
+import { TemporaryVariable } from './TemporaryVariable';
+import { Variable } from './Variable';
 
 export class Transcompiler {
   #cursorPosition: Address = 0 as Address;
   #memory: Memory;
   #scope: Scope;
   #code: CodeOperation[];
-  #promotingBlockers: number;
   #currentCodeBlock: string;
   #codeBlockNamesStack: string[];
 
@@ -20,31 +19,31 @@ export class Transcompiler {
     this.#memory = memory;
     this.#scope = new Scope(null, this.#memory);
     this.#code = [];
-    this.#promotingBlockers = 0;
-    this.#currentCodeBlock = "";
+    this.#currentCodeBlock = '';
     this.#codeBlockNamesStack = [];
   }
 
   declareVariable(name: string) {
     this.operation(`declare ${name}`, () => {
-      const isDirty = this.#scope.declareVariable(name, this.#cursorPosition);
-      if (isDirty) {
-        this.#reset(name);
-      }
+      this.#scope.declareVariable(name, this.#cursorPosition);
     });
   }
 
   assignValue(name: string, value: number) {
     this.operation(`assign ${value} to ${name}`, () => {
       this.#reset(name);
-      this.#inc(name, value);
+      if (value > 0) {
+        this.#inc(name, value);
+      } else {
+        this.#dec(name, -value);
+      }
     });
   }
 
   writeInput(name: string) {
     this.operation(`write input ${name}`, () => {
       this.#moveTo(name);
-      this.#outputBrainfuck(",");
+      this.#outputBrainfuck(',');
     });
   }
 
@@ -65,13 +64,19 @@ export class Transcompiler {
         this.#inc(to);
       });
 
-      this.#promoteOrResetVariable(from, newFrom, false);
+      this.restoreValueFromTemporary(from, newFrom);
     });
   }
 
-  increment(name: string, n: number) {
+  increment(name: string, n: number = 1) {
     this.operation(`increment ${name} with ${n}`, () => {
       this.#inc(name, n);
+    });
+  }
+
+  decrement(name: string, n: number = 1) {
+    this.operation(`decrement ${name} with ${n}`, () => {
+      this.#dec(name, n);
     });
   }
 
@@ -113,11 +118,11 @@ export class Transcompiler {
       this.operation(`endif ${conditionName}`, () => {
         this.#dec(elseFlag);
         this.#outputBrainfuck(`]`);
-        this.#scope.unsetTemporaryVariable(elseFlag, false);
+        this.#scope.unsetTemporaryVariable(elseFlag);
       });
     }
 
-    this.#scope.unsetTemporaryVariable(conditionCopy, false);
+    this.#scope.unsetTemporaryVariable(conditionCopy);
   }
 
   multiply(to: string, from: string) {
@@ -136,16 +141,17 @@ export class Transcompiler {
         });
       });
 
-      this.#scope.unsetTemporaryVariable(interator, false);
-      this.#scope.unsetTemporaryVariable(interator2swap, true);
+      this.#scope.unsetTemporaryVariable(interator);
+      this.#reset(interator2swap);
+      this.#scope.unsetTemporaryVariable(interator2swap);
 
-      this.#promoteOrResetVariable(to, result, true);
+      this.#reset(to);
+      this.restoreValueFromTemporary(to, result);
     });
   }
 
   while(name: string, fn: () => void) {
     this.operation(`while ${name}`, () => {
-      this.#promotingBlockers++;
       this.#moveTo(name);
       this.#outputBrainfuck(`[`);
     });
@@ -153,13 +159,12 @@ export class Transcompiler {
     this.operation(`endwhile ${name}`, () => {
       this.#moveTo(name);
       this.#outputBrainfuck(`]`);
-      this.#promotingBlockers--;
     });
   }
 
   pushScope() {
     this.#code.push({
-      scope: "open",
+      scope: 'open',
     });
     this.#scope = new Scope(this.#scope, this.#memory);
   }
@@ -169,11 +174,12 @@ export class Transcompiler {
 
     const variables = this.#scope.getVariablesOfThisScope();
     for (const variable of variables) {
-      this.#scope.unsetVariable(variable, true);
+      this.#reset(variable);
+      this.#scope.unsetVariable(variable);
     }
     this.#scope = this.#scope.getParentScope();
     this.#code.push({
-      scope: "close",
+      scope: 'close',
     });
   }
 
@@ -186,6 +192,8 @@ export class Transcompiler {
   get code(): string {
     this.#scope.deepVerifyBeforeDiscard();
 
+    this.operation('', () => {});
+
     return new CodePrinter(this.#code).print();
   }
 
@@ -196,7 +204,7 @@ export class Transcompiler {
         code: this.#currentCodeBlock,
         level: this.#codeBlockNamesStack.length,
       });
-      this.#currentCodeBlock = "";
+      this.#currentCodeBlock = '';
     }
 
     this.#codeBlockNamesStack.push(name);
@@ -207,38 +215,22 @@ export class Transcompiler {
         code: this.#currentCodeBlock,
         level: this.#codeBlockNamesStack.length,
       });
-      this.#currentCodeBlock = "";
+      this.#currentCodeBlock = '';
     }
     this.#codeBlockNamesStack.pop();
   }
 
-  #promoteOrResetVariable(
+  restoreValueFromTemporary(
     name: string,
-    temporaryWithValue: TemporaryVariable,
-    isDirty: boolean
+    temporaryWithValue: TemporaryVariable
   ) {
-    if (this.#promotingBlockers) {
-      this.operation(`reset ${name} value`, () => {
-        if (isDirty) {
-          this.#reset(name);
-        }
-        this.#loopOf(temporaryWithValue, () => {
-          this.#inc(name);
-        });
-        this.#scope.unsetTemporaryVariable(temporaryWithValue, false);
-      });
-    } else {
-      this.#scope.promoteVariable(name, temporaryWithValue, isDirty);
-    }
+    this.#moveValue(name, temporaryWithValue);
+    this.#scope.unsetTemporaryVariable(temporaryWithValue);
   }
 
   #declareTemporaryVariable(nextTo: Addressable = this.#cursorPosition) {
     const nextToAddress = this.#normalizeAddress(nextTo);
-    const { variable, isDirty } =
-      this.#scope.declareTemporaryVariable(nextToAddress);
-    if (isDirty) {
-      this.#reset(variable);
-    }
+    const variable = this.#scope.declareTemporaryVariable(nextToAddress);
     return variable;
   }
 
@@ -252,26 +244,32 @@ export class Transcompiler {
         this.#inc(newTo);
       });
 
-      this.#promoteOrResetVariable(from, newFrom, false);
+      this.restoreValueFromTemporary(from, newFrom);
     });
 
     return newTo;
   }
 
+  #moveValue(to: string, from: TemporaryVariable) {
+    this.#loopOf(from, () => {
+      this.#inc(to);
+    });
+  }
+
   #reset(name: VariableLike) {
     this.#moveTo(name);
-    this.#outputBrainfuck("[-]");
+    this.#outputBrainfuck('[-]');
   }
 
   #normalizeVariable(variableLike: VariableLike) {
-    if (typeof variableLike === "string") {
+    if (typeof variableLike === 'string') {
       return this.#scope.getVariable(variableLike);
     }
     return variableLike;
   }
 
   #normalizeAddress(addressable: Addressable) {
-    if (typeof addressable === "number") {
+    if (typeof addressable === 'number') {
       return addressable;
     }
     return this.#normalizeVariable(addressable).address;
@@ -282,9 +280,9 @@ export class Transcompiler {
 
     const difference = address - this.#cursorPosition;
     if (difference < 0) {
-      this.#outputBrainfuck("<".repeat(-difference));
+      this.#outputBrainfuck('<'.repeat(-difference));
     } else if (difference > 0) {
-      this.#outputBrainfuck(">".repeat(difference));
+      this.#outputBrainfuck('>'.repeat(difference));
     }
     this.#cursorPosition = address;
   }
@@ -315,7 +313,7 @@ export class Transcompiler {
   }
 
   #readValue() {
-    this.#outputBrainfuck(".");
+    this.#outputBrainfuck('.');
   }
 
   get [scopeSymbol]() {

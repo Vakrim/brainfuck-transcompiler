@@ -1,6 +1,6 @@
-import Brainfuck from "brainfuck-node";
-import { MemoryAllocationSnap } from "../MemoryAllocationSnap";
-import { Transcompiler } from "../Transcompiler";
+import Brainfuck from 'brainfuck-node';
+import { MemoryAllocationSnap } from '../MemoryAllocationSnap';
+import { Transcompiler } from '../Transcompiler';
 
 export function executeCode(
   compiler: Transcompiler,
@@ -11,7 +11,7 @@ export function executeCode(
   const brainfuck = new Brainfuck();
 
   const normalizedInput = input
-    ? typeof input === "string"
+    ? typeof input === 'string'
       ? input
       : String.fromCharCode(...input)
     : undefined;

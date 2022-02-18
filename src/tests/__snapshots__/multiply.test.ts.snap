@@ -4,18 +4,18 @@ exports[`multiplying multiplies two variables 1`] = `
 "[-]++++++++  assign 8 to a
 >[-]++++++  assign 6 to b
 multiply a to b
- <[->>+>+<<<]  copy a to temp
->>>[-<<[->>>+>+<<<<]>>>[-<<<+>>>]<]  multiply a to b
->>.  read b
-<<<.  read a"
+ <[->>+>+<<<]>>[-<<+>>]  copy a to temp
+>[-<<[->+>>+<<<]>[-<+>]>]<[-]<[-]>>>[-<<<+>>>]  multiply a to b
+<<<.  read b
+<.  read a"
 `;
 
 exports[`multiplying multiplies two variables without memory leak 1`] = `
 "[-]++  assign 2 to a
 >[-]+++  assign 3 to b
 multiply a to b
- <[->>+>+<<<]  copy a to temp
->>>[-<<[->>>+>+<<<<]>>>[-<<<+>>>]<]  multiply a to b
-<.  read a
->>>.  read b"
+ <[->>+>+<<<]>>[-<<+>>]  copy a to temp
+>[-<<[->+>>+<<<]>[-<+>]>]<[-]<[-]>>>[-<<<+>>>]  multiply a to b
+<<<<.  read a
+>.  read b"
 `;

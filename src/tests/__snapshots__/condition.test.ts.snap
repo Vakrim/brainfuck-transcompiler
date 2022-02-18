@@ -2,22 +2,22 @@
 
 exports[`condition handles code branching 1`] = `
 ",  write input a
-[->>+>+<<<]  copy a to temp
->>>[  if a
+[->>+>+<<<]>>[-<<+>>]  copy a to temp
+>[  if a
   <<+++++  increment b with 5
 >>[-]]  endif a
 <<.  read b
->.  read a"
+<.  read a"
 `;
 
 exports[`condition handles if/else branching 1`] = `
 ",  write input a
-[->>+>+<<<]  copy a to temp
->>>>+<[  if a
+[->>+>+<<<]>>[-<<+>>]  copy a to temp
++>[  if a
   <<+++++  increment b with 5
->>[-]>-<]>[  else a
-  <<<++++++++++  increment b with 10
->>>-]  endif a
-<<<.  read b
->.  read a"
+>>[-]<->]<[  else a
+  <++++++++++  increment b with 10
+>-]  endif a
+<.  read b
+<.  read a"
 `;
