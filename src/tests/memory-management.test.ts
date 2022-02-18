@@ -14,14 +14,26 @@ describe("memory management", () => {
       compiler.declareVariable("c");
       compiler.assignValue("c", 3);
 
-      expect(executeCode(compiler.code).memory).toEqual([1, 2, 3]);
+      expect(executeCode(compiler).memoryAllocation).toEqual([
+        { name: "a", value: 1 },
+        { name: "b", value: 2 },
+        { name: "c", value: 3 },
+      ]);
     });
 
-    expect(executeCode(compiler.code).memory).toEqual([1, 2, 3]);
+    expect(executeCode(compiler).memoryAllocation).toEqual([
+      { name: "a", value: 1 },
+      { name: "b", value: 2 },
+      { dirty: 3 },
+    ]);
 
     compiler.declareVariable("d");
 
-    expect(executeCode(compiler.code).memory).toEqual([1, 2, 0]);
+    expect(executeCode(compiler).memoryAllocation).toEqual([
+      { name: "a", value: 1 },
+      { name: "b", value: 2 },
+      { name: "d", value: 0 },
+    ]);
 
     expect(compiler.code).toMatchSnapshot();
   });
@@ -37,19 +49,28 @@ describe("memory management", () => {
       compiler.assignValue("a", 1);
       compiler.assignValue("b", 2);
 
-      expect(executeCode(compiler.code).memory).toEqual([1, 2]);
+      expect(executeCode(compiler).memoryAllocation).toEqual([
+        { name: "a", value: 1 },
+        { name: "b", value: 2 },
+      ]);
 
       compiler.add("b", "a");
 
-      expect(executeCode(compiler.code).memory).toEqual([0, 3, 1]);
+      expect(executeCode(compiler).memoryAllocation).toEqual([
+        0,
+        { name: "b", value: 3 },
+        { name: "a", value: 1 },
+      ]);
     });
-
-    expect(executeCode(compiler.code).memory).toEqual([0, 3, 1]);
 
     compiler.declareVariable("b");
     compiler.declareVariable("c");
 
-    expect(executeCode(compiler.code).memory).toEqual([0, 0, 1]);
+    expect(executeCode(compiler).memoryAllocation).toEqual([
+      { name: "b", value: 0 },
+      { name: "c", value: 0 },
+      { name: "a", value: 1 },
+    ]);
 
     expect(compiler.code).toMatchSnapshot();
   });
@@ -67,7 +88,11 @@ describe("memory management", () => {
       });
     }
 
-    expect(executeCode(compiler.code).memory).toEqual([15, 0, 5]);
+    expect(executeCode(compiler).memoryAllocation).toEqual([
+      { name: "sum", value: 15 },
+      0,
+      { dirty: 5 },
+    ]);
 
     expect(compiler.code).toMatchSnapshot();
   });

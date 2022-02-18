@@ -90,6 +90,10 @@ export class Scope {
     return this.#parent;
   }
 
+  hasParentScope(): boolean {
+    return !!this.#parent;
+  }
+
   promoteVariable(
     name: string,
     temp: TemporaryVariable,
@@ -118,5 +122,9 @@ export class Scope {
         `Can't discard scope when temporary variables are still allocated`
       );
     }
+  }
+
+  get memory() {
+    return this.#memory;
   }
 }

@@ -51,6 +51,10 @@ export class Memory {
       }
     }
   }
+
+  get dirties() {
+    return [...this.#dirties];
+  }
 }
 
 interface Allocation {

@@ -17,7 +17,5 @@ multiply a to b
  <[->>+>+<<<]  copy a to temp
 >>>[-<<[->>>+>+<<<<]>>>[-<<<+>>>]<]  multiply a to b
 <.  read a
->>>.  read b
-<[-]  declare c
-<<<[-]  declare f"
+>>>.  read b"
 `;

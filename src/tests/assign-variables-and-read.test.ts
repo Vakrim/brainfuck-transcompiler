@@ -11,7 +11,7 @@ describe("assign variables and read", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).output).toEqual("a");
+    expect(executeCode(compiler).output).toEqual("a");
   });
 
   it("reads two variable", () => {
@@ -28,6 +28,6 @@ describe("assign variables and read", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).output).toEqual("ba");
+    expect(executeCode(compiler).output).toEqual("ba");
   });
 });

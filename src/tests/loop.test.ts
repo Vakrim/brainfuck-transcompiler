@@ -18,11 +18,11 @@ describe("loop", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code, [0]).codes).toEqual([0]);
+    expect(executeCode(compiler, [0]).codes).toEqual([0]);
 
-    expect(executeCode(compiler.code, [2, 5, 0]).codes).toEqual([7]);
+    expect(executeCode(compiler, [2, 5, 0]).codes).toEqual([7]);
 
-    expect(executeCode(compiler.code, [2, 5, 10, 0]).codes).toEqual([17]);
+    expect(executeCode(compiler, [2, 5, 10, 0]).codes).toEqual([17]);
   });
 
   it("doesn't memory leak on one loop", () => {
@@ -42,9 +42,23 @@ describe("loop", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).memory).toEqual([0, 6, 0, 0, 0]);
+    expect(executeCode(compiler).memoryAllocation).toEqual([
+      {
+        name: "i",
+        value: 0,
+      },
+      {
+        name: "product",
+        value: 6,
+      },
+      {
+        dirty: 0,
+      },
+      0,
+      0,
+    ]);
 
-    expect(executeCode(compiler.code).codes).toEqual([6]);
+    expect(executeCode(compiler).codes).toEqual([6]);
   });
 
   it("handles while loop", () => {
@@ -64,12 +78,12 @@ describe("loop", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code, [0]).codes).toEqual([1]);
+    expect(executeCode(compiler, [0]).codes).toEqual([1]);
 
-    expect(executeCode(compiler.code, [3, 0]).codes).toEqual([3]);
+    expect(executeCode(compiler, [3, 0]).codes).toEqual([3]);
 
-    expect(executeCode(compiler.code, [2, 5, 0]).codes).toEqual([10]);
+    expect(executeCode(compiler, [2, 5, 0]).codes).toEqual([10]);
 
-    expect(executeCode(compiler.code, [2, 5, 10, 0]).codes).toEqual([100]);
+    expect(executeCode(compiler, [2, 5, 10, 0]).codes).toEqual([100]);
   });
 });

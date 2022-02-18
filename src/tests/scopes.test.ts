@@ -38,7 +38,7 @@ describe("scopes", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).codes).toEqual([3, 5]);
+    expect(executeCode(compiler).codes).toEqual([3, 5]);
   });
 
   it("assign memory after inner scope when usign temporary variables in outer scope", () => {
@@ -59,6 +59,6 @@ describe("scopes", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).codes).toEqual([8, 3]);
+    expect(executeCode(compiler).codes).toEqual([8, 3]);
   });
 });

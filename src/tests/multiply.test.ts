@@ -17,7 +17,7 @@ describe("multiplying", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).codes).toEqual([48, 8]);
+    expect(executeCode(compiler).codes).toEqual([48, 8]);
   });
 
   it("multiplies two variables without memory leak", () => {
@@ -33,20 +33,27 @@ describe("multiplying", () => {
     compiler.readVariable("a");
     compiler.readVariable("b");
 
-    compiler.declareVariable("c");
-
-    compiler.declareVariable("d");
-
-    compiler.declareVariable("e");
-
-    compiler.declareVariable("f");
-
-    compiler.declareVariable("g");
-
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).codes).toEqual([2, 6]);
+    expect(executeCode(compiler).codes).toEqual([2, 6]);
 
-    expect(executeCode(compiler.code).memory).toEqual([0, 0, 2, 0, 0, 6]);
+    expect(executeCode(compiler).memoryAllocation).toEqual([
+      0,
+      {
+        dirty: 3,
+      },
+      {
+        name: "a",
+        value: 2,
+      },
+      0,
+      {
+        dirty: 0,
+      },
+      {
+        name: "b",
+        value: 6,
+      },
+    ]);
   });
 });

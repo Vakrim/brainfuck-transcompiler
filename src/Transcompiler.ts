@@ -1,6 +1,7 @@
 import { Address } from "./Address";
 import { CodePrinter, CodeOperation } from "./CodePrinter";
 import { Memory } from "./Memory";
+import { scopeSymbol } from "./MemoryAllocationSnap";
 import { Scope } from "./Scope";
 import { TemporaryVariable } from "./TemporaryVariable";
 import { Variable } from "./Variable";
@@ -315,6 +316,10 @@ export class Transcompiler {
 
   #readValue() {
     this.#outputBrainfuck(".");
+  }
+
+  get [scopeSymbol]() {
+    return this.#scope;
   }
 }
 

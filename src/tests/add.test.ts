@@ -17,7 +17,7 @@ describe("adding", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code).codes).toEqual([25, 10]);
+    expect(executeCode(compiler).codes).toEqual([25, 10]);
   });
 
   it("reads three inputs and sums them", () => {
@@ -41,6 +41,6 @@ describe("adding", () => {
 
     expect(compiler.code).toMatchSnapshot();
 
-    expect(executeCode(compiler.code, [10, 20, 30]).codes).toEqual([60]);
+    expect(executeCode(compiler, [10, 20, 30]).codes).toEqual([60]);
   });
 });

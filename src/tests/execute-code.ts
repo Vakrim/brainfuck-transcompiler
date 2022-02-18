@@ -1,6 +1,13 @@
 import Brainfuck from "brainfuck-node";
+import { MemoryAllocationSnap } from "../MemoryAllocationSnap";
+import { Transcompiler } from "../Transcompiler";
 
-export function executeCode(code: string, input?: string | number[]) {
+export function executeCode(
+  compiler: Transcompiler,
+  input?: string | number[]
+) {
+  const code = compiler.code;
+
   const brainfuck = new Brainfuck();
 
   const normalizedInput = input
@@ -11,10 +18,12 @@ export function executeCode(code: string, input?: string | number[]) {
 
   const { output, memory } = brainfuck.execute(code, normalizedInput);
 
+  const memoryAllocationSnap = new MemoryAllocationSnap(compiler);
+
   return {
     output,
     codes: getCodes(output),
-    memory: memory.list,
+    memoryAllocation: memoryAllocationSnap.printSnap(memory.list),
   };
 }
 
