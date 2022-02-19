@@ -24,7 +24,7 @@ export class MemoryAllocationSnap {
       }
 
       if (value !== 0) {
-        throw new Error("Unexpected non zero cell");
+        throw new Error('Unexpected non zero cell');
       }
       return value;
     });

@@ -14,10 +14,7 @@ describe('fibonacci', () => {
     compiler.declareVariable('current');
     compiler.assignValue('current', 1);
 
-    compiler.readVariable('prev');
     compiler.readVariable('current');
-
-    compiler.decrement('i', 2);
 
     compiler.while('i', () => {
       compiler.declareVariable('sum');
@@ -38,7 +35,7 @@ describe('fibonacci', () => {
     expect(compiler.code).toMatchSnapshot();
 
     expect(executeCode(compiler).codes).toEqual([
-      0, 1, 1, 2, 3, 5, 8, 13, 21, 34,
+      1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89,
     ]);
   });
 });

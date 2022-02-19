@@ -150,6 +150,20 @@ export class Transcompiler {
     });
   }
 
+  divmod(
+    divResult: string,
+    modResult: string,
+    dividentOriginal: string,
+    divisorOriginal: string
+  ) {
+    this.operation(
+      `divmod (${divResult} ${modResult}) = ${dividentOriginal} / ${divisorOriginal}`,
+      () => {
+        throw new Error('Not implemented');
+      }
+    );
+  }
+
   while(name: string, fn: () => void) {
     this.operation(`while ${name}`, () => {
       this.#moveTo(name);
@@ -162,31 +176,10 @@ export class Transcompiler {
     });
   }
 
-  pushScope() {
-    this.#code.push({
-      scope: 'open',
-    });
-    this.#scope = new Scope(this.#scope, this.#memory);
-  }
-
-  popScope() {
-    this.#scope.verifyBeforeDiscard();
-
-    const variables = this.#scope.getVariablesOfThisScope();
-    for (const variable of variables) {
-      this.#reset(variable);
-      this.#scope.unsetVariable(variable);
-    }
-    this.#scope = this.#scope.getParentScope();
-    this.#code.push({
-      scope: 'close',
-    });
-  }
-
   scope(fn: () => void) {
-    this.pushScope();
+    this.#pushScope();
     fn();
-    this.popScope();
+    this.#popScope();
   }
 
   get code(): string {
@@ -228,6 +221,27 @@ export class Transcompiler {
     this.#scope.unsetTemporaryVariable(temporaryWithValue);
   }
 
+  #pushScope() {
+    this.#code.push({
+      scope: 'open',
+    });
+    this.#scope = new Scope(this.#scope, this.#memory);
+  }
+
+  #popScope() {
+    this.#scope.verifyBeforeDiscard();
+
+    const variables = this.#scope.getVariablesOfThisScope();
+    for (const variable of variables) {
+      this.#reset(variable);
+      this.#scope.unsetVariable(variable);
+    }
+    this.#scope = this.#scope.getParentScope();
+    this.#code.push({
+      scope: 'close',
+    });
+  }
+
   #declareTemporaryVariable(nextTo: Addressable = this.#cursorPosition) {
     const nextToAddress = this.#normalizeAddress(nextTo);
     const variable = this.#scope.declareTemporaryVariable(nextToAddress);
@@ -250,7 +264,7 @@ export class Transcompiler {
     return newTo;
   }
 
-  #moveValue(to: string, from: TemporaryVariable) {
+  #moveValue(to: VariableLike, from: TemporaryVariable) {
     this.#loopOf(from, () => {
       this.#inc(to);
     });

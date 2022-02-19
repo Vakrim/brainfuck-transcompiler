@@ -15,16 +15,14 @@ describe('scopes', () => {
     expect(allocateSpy).toHaveBeenCalledTimes(1);
     expect(freeSpy).toHaveBeenCalledTimes(0);
 
-    compiler.pushScope();
+    compiler.scope(() => {
+      compiler.declareVariable('innerScope');
+      compiler.assignValue('innerScope', 3);
+      compiler.readVariable('innerScope');
 
-    compiler.declareVariable('innerScope');
-    compiler.assignValue('innerScope', 3);
-    compiler.readVariable('innerScope');
-
-    expect(allocateSpy).toHaveBeenCalledTimes(2);
-    expect(freeSpy).toHaveBeenCalledTimes(0);
-
-    compiler.popScope();
+      expect(allocateSpy).toHaveBeenCalledTimes(2);
+      expect(freeSpy).toHaveBeenCalledTimes(0);
+    });
 
     expect(allocateSpy).toHaveBeenCalledTimes(2);
     expect(freeSpy).toHaveBeenCalledTimes(1);
@@ -47,15 +45,14 @@ describe('scopes', () => {
     compiler.declareVariable('a');
     compiler.assignValue('a', 3);
 
-    compiler.pushScope();
-    compiler.declareVariable('b');
-    compiler.assignValue('b', 5);
+    compiler.scope(() => {
+      compiler.declareVariable('b');
+      compiler.assignValue('b', 5);
 
-    compiler.add('b', 'a');
-    compiler.readVariable('b');
-    compiler.readVariable('a');
-
-    compiler.popScope();
+      compiler.add('b', 'a');
+      compiler.readVariable('b');
+      compiler.readVariable('a');
+    });
 
     expect(compiler.code).toMatchSnapshot();
 
