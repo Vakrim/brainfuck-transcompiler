@@ -21,7 +21,7 @@ export class Scope {
       throw new Error(`Can't redeclare variable with name "${name}"`);
     }
 
-    const address = this.#memory.allocate(this, nextTo);
+    const address = this.#memory.allocate(this, nextTo, 1);
 
     const variable = new Variable(name, address, this);
 
@@ -37,11 +37,11 @@ export class Scope {
 
     this.#variables.delete(name);
 
-    this.#memory.free(variable.address, this);
+    this.#memory.free(this, variable.address);
   }
 
   declareTemporaryVariable(nextTo: Address) {
-    const address = this.#memory.allocate(this, nextTo);
+    const address = this.#memory.allocate(this, nextTo, 1);
 
     const variable = new TemporaryVariable(address);
 
@@ -57,7 +57,7 @@ export class Scope {
 
     this.#tempVariables.delete(variable);
 
-    this.#memory.free(variable.address, this);
+    this.#memory.free(this, variable.address);
   }
 
   getVariable(name: string): Variable {
