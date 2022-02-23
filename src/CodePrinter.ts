@@ -25,7 +25,15 @@ export class CodePrinter {
   }
 
   #sanitizeComment(comment: string) {
-    return comment.replace(/[\,\.\[\]\<\>\+\-]/, ' ');
+    return comment
+      .replace(/\,/g, '؍')
+      .replace(/\./g, 'ꓸ')
+      .replace(/\[/g, '〔')
+      .replace(/\]/g, '〕')
+      .replace(/\</g, '❮')
+      .replace(/\>/g, '❯')
+      .replace(/\+/g, '᛭')
+      .replace(/\-/g, '˗');
   }
 }
 

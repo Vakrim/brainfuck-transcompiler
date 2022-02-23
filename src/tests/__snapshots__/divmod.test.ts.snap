@@ -1,3 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`divmod calculates div and mod results 1`] = `""`;
+exports[`divmod calculates div and mod results 1`] = `
+",  write input a
+>,  write input b
+<[->>>>+>+<<<<<]>>>>[-<<<<+>>>>]<<<[->>>+>>>+<<<<<<]>>>[-<<<+>>>]>[->+>-[>+>>]>[+[-<+>]>+>>]<<<<<<]<<<[-]>>>>>>[-<<<<<<+>>>>>>]<<<<<[-]>>>>>>[-<<<<<<+>>>>>>]<<<<[-]>[-]>[-]>[-]>[-]>[-]>[-]  divmod (div mod) = a / b
+<<<<<<<<.  read div
+<.  read mod"
+`;

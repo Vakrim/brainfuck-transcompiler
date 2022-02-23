@@ -1,19 +1,20 @@
 import { Address } from './Address';
 import { Memory } from './Memory';
+import { ArraySize, Indexes, TemporaryArray } from './TemporaryArray';
 import { TemporaryVariable } from './TemporaryVariable';
 import { Variable } from './Variable';
 
 export class Scope {
   #parent: Scope | null;
   #variables: Map<string, Variable>;
-  #tempVariables: Set<TemporaryVariable>;
+  #temporaries: Set<TemporaryVariable | TemporaryArray<any>>;
   #memory: Memory;
 
   constructor(parent: Scope | null, memory: Memory) {
     this.#parent = parent;
     this.#memory = memory;
     this.#variables = new Map();
-    this.#tempVariables = new Set();
+    this.#temporaries = new Set();
   }
 
   declareVariable(name: string, nextTo: Address) {
@@ -45,19 +46,41 @@ export class Scope {
 
     const variable = new TemporaryVariable(address);
 
-    this.#tempVariables.add(variable);
+    this.#temporaries.add(variable);
 
     return variable;
   }
 
+  declareTemporaryArray<T extends ArraySize>(nextTo: Address, size: T) {
+    const address = this.#memory.allocate(this, nextTo, size);
+
+    const array = new TemporaryArray(address, size);
+
+    this.#temporaries.add(array);
+
+    return array;
+  }
+
   unsetTemporaryVariable(variable: TemporaryVariable) {
-    if (!this.#tempVariables.has(variable)) {
+    if (!this.#temporaries.has(variable)) {
       throw new Error(`Temporary variable is not declared`);
     }
 
-    this.#tempVariables.delete(variable);
+    this.#temporaries.delete(variable);
 
     this.#memory.free(this, variable.address);
+  }
+
+  unsetTemporaryArray(array: TemporaryArray<any>) {
+    if (!this.#temporaries.has(array)) {
+      throw new Error(`Temporary array is not declared`);
+    }
+
+    this.#temporaries.delete(array);
+
+    array.variables.forEach((variable) => {
+      this.#memory.free(this, variable.address);
+    });
   }
 
   getVariable(name: string): Variable {
@@ -101,7 +124,7 @@ export class Scope {
   }
 
   verifyBeforeDiscard() {
-    if (this.#tempVariables.size > 0) {
+    if (this.#temporaries.size > 0) {
       throw new Error(
         `Can't discard scope when temporary variables are still allocated`
       );

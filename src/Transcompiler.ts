@@ -56,15 +56,7 @@ export class Transcompiler {
 
   add(to: string, from: string) {
     this.operation(`add ${from} to ${to}`, () => {
-      this.#moveTo(from);
-      const newFrom = this.#declareTemporaryVariable(this.#cursorPosition);
-
-      this.#loopOf(from, () => {
-        this.#inc(newFrom);
-        this.#inc(to);
-      });
-
-      this.restoreValueFromTemporary(from, newFrom);
+      this.#add(to, from);
     });
   }
 
@@ -159,7 +151,25 @@ export class Transcompiler {
     this.operation(
       `divmod (${divResult} ${modResult}) = ${dividentOriginal} / ${divisorOriginal}`,
       () => {
-        throw new Error('Not implemented');
+        const array = this.#scope.declareTemporaryArray(
+          (this.#normalizeAddress(divResult) + 2) as Address,
+          7
+        );
+
+        this.#add(array.at(0), dividentOriginal);
+        this.#add(array.at(2), divisorOriginal);
+
+        this.#moveTo(array.at(0));
+        this.#outputBrainfuck(`[->+>-[>+>>]>[+[-<+>]>+>>]<<<<<<]`);
+
+        this.#reset(modResult);
+        this.#moveValue(modResult, array.at(3));
+        this.#reset(divResult);
+        this.#moveValue(divResult, array.at(4));
+
+        array.variables.forEach((v) => this.#reset(v));
+
+        this.#scope.unsetTemporaryArray(array);
       }
     );
   }
@@ -219,6 +229,18 @@ export class Transcompiler {
   ) {
     this.#moveValue(name, temporaryWithValue);
     this.#scope.unsetTemporaryVariable(temporaryWithValue);
+  }
+
+  #add(to: Addressable, from: string) {
+    this.#moveTo(from);
+    const newFrom = this.#declareTemporaryVariable(this.#cursorPosition);
+
+    this.#loopOf(from, () => {
+      this.#inc(newFrom);
+      this.#inc(to);
+    });
+
+    this.restoreValueFromTemporary(from, newFrom);
   }
 
   #pushScope() {
