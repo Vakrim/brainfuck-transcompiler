@@ -7,7 +7,7 @@ describe('assign variables and read', () => {
 
     compiler.declareVariable('a');
     compiler.assignValue('a', 97);
-    compiler.readVariable('a');
+    compiler.printVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -23,8 +23,8 @@ describe('assign variables and read', () => {
     compiler.assignValue('a', 97);
     compiler.assignValue('b', 98);
 
-    compiler.readVariable('b');
-    compiler.readVariable('a');
+    compiler.printVariable('b');
+    compiler.printVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 

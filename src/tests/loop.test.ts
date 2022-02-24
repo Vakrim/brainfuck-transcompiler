@@ -14,7 +14,7 @@ describe('loop', () => {
       compiler.writeInput('a');
     });
 
-    compiler.readVariable('sum');
+    compiler.printVariable('sum');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -38,7 +38,7 @@ describe('loop', () => {
       compiler.assignValue('i', 0);
     });
 
-    compiler.readVariable('product');
+    compiler.printVariable('product');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -72,7 +72,7 @@ describe('loop', () => {
       compiler.writeInput('a');
     });
 
-    compiler.readVariable('product');
+    compiler.printVariable('product');
 
     expect(compiler.code).toMatchSnapshot();
 

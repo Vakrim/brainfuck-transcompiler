@@ -14,8 +14,8 @@ describe('condition', () => {
       compiler.increment('b', 5);
     });
 
-    compiler.readVariable('b');
-    compiler.readVariable('a');
+    compiler.printVariable('b');
+    compiler.printVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -44,8 +44,8 @@ describe('condition', () => {
       }
     );
 
-    compiler.readVariable('b');
-    compiler.readVariable('a');
+    compiler.printVariable('b');
+    compiler.printVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 

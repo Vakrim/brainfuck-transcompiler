@@ -12,8 +12,8 @@ describe('adding', () => {
 
     compiler.add('b', 'a');
 
-    compiler.readVariable('b');
-    compiler.readVariable('a');
+    compiler.printVariable('b');
+    compiler.printVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -43,7 +43,7 @@ describe('adding', () => {
     compiler.add('sum', 'b');
     compiler.add('sum', 'c');
 
-    compiler.readVariable('sum');
+    compiler.printVariable('sum');
 
     expect(compiler.code).toMatchSnapshot();
 

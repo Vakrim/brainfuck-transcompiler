@@ -1,7 +1,7 @@
 import { Address } from './Address';
 import { TemporaryVariable } from './TemporaryVariable';
 
-export class TemporaryArray<Size extends ArraySize> {
+export class TemporaryArray<Size extends ArraySize = ArraySize> {
   #address: Address;
   #size: number;
   #variables: TemporaryVariable[];

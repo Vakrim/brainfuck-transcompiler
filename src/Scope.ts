@@ -7,7 +7,7 @@ import { Variable } from './Variable';
 export class Scope {
   #parent: Scope | null;
   #variables: Map<string, Variable>;
-  #temporaries: Set<TemporaryVariable | TemporaryArray<any>>;
+  #temporaries: Set<TemporaryVariable | TemporaryArray>;
   #memory: Memory;
 
   constructor(parent: Scope | null, memory: Memory) {
@@ -71,7 +71,7 @@ export class Scope {
     this.#memory.free(this, variable.address);
   }
 
-  unsetTemporaryArray(array: TemporaryArray<any>) {
+  unsetTemporaryArray(array: TemporaryArray) {
     if (!this.#temporaries.has(array)) {
       throw new Error(`Temporary array is not declared`);
     }

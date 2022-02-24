@@ -24,13 +24,13 @@ export class Transcompiler {
   }
 
   declareVariable(name: string) {
-    this.operation(`declare ${name}`, () => {
+    this.#operation(`declare ${name}`, () => {
       this.#scope.declareVariable(name, this.#cursorPosition);
     });
   }
 
   assignValue(name: string, value: number) {
-    this.operation(`assign ${value} to ${name}`, () => {
+    this.#operation(`assign ${value} to ${name}`, () => {
       this.#reset(name);
       if (value > 0) {
         this.#inc(name, value);
@@ -41,33 +41,33 @@ export class Transcompiler {
   }
 
   writeInput(name: string) {
-    this.operation(`write input ${name}`, () => {
+    this.#operation(`write input ${name}`, () => {
       this.#moveTo(name);
       this.#outputBrainfuck(',');
     });
   }
 
-  readVariable(name: string) {
-    this.operation(`read ${name}`, () => {
+  printVariable(name: string) {
+    this.#operation(`read ${name}`, () => {
       this.#moveTo(name);
       this.#readValue();
     });
   }
 
   add(to: string, from: string) {
-    this.operation(`add ${from} to ${to}`, () => {
+    this.#operation(`add ${from} to ${to}`, () => {
       this.#add(to, from);
     });
   }
 
   increment(name: string, n: number = 1) {
-    this.operation(`increment ${name} with ${n}`, () => {
+    this.#operation(`increment ${name} with ${n}`, () => {
       this.#inc(name, n);
     });
   }
 
   decrement(name: string, n: number = 1) {
-    this.operation(`decrement ${name} with ${n}`, () => {
+    this.#operation(`decrement ${name} with ${n}`, () => {
       this.#dec(name, n);
     });
   }
@@ -80,25 +80,25 @@ export class Transcompiler {
     const conditionCopy = this.#copy(conditionName);
 
     if (!ifNegative) {
-      this.operation(`if ${conditionName}`, () => {
+      this.#operation(`if ${conditionName}`, () => {
         this.#moveTo(conditionCopy);
         this.#outputBrainfuck(`[`);
       });
       this.scope(ifPostitive);
-      this.operation(`endif ${conditionName}`, () => {
+      this.#operation(`endif ${conditionName}`, () => {
         this.#moveTo(conditionCopy);
         this.#outputBrainfuck(`[-]]`);
       });
     } else {
       const elseFlag = this.#declareTemporaryVariable(conditionCopy);
 
-      this.operation(`if ${conditionName}`, () => {
+      this.#operation(`if ${conditionName}`, () => {
         this.#inc(elseFlag);
         this.#moveTo(conditionCopy);
         this.#outputBrainfuck(`[`);
       });
       this.scope(ifPostitive);
-      this.operation(`else ${conditionName}`, () => {
+      this.#operation(`else ${conditionName}`, () => {
         this.#reset(conditionCopy);
         this.#dec(elseFlag);
         this.#moveTo(conditionCopy);
@@ -107,7 +107,7 @@ export class Transcompiler {
         this.#outputBrainfuck(`[`);
       });
       this.scope(ifNegative);
-      this.operation(`endif ${conditionName}`, () => {
+      this.#operation(`endif ${conditionName}`, () => {
         this.#dec(elseFlag);
         this.#outputBrainfuck(`]`);
         this.#scope.unsetTemporaryVariable(elseFlag);
@@ -118,7 +118,7 @@ export class Transcompiler {
   }
 
   multiply(to: string, from: string) {
-    this.operation(`multiply ${from} to ${to}`, () => {
+    this.#operation(`multiply ${from} to ${to}`, () => {
       const interator = this.#copy(from);
       const interator2swap = this.#declareTemporaryVariable(interator.address);
       const result = this.#declareTemporaryVariable(interator.address);
@@ -138,7 +138,7 @@ export class Transcompiler {
       this.#scope.unsetTemporaryVariable(interator2swap);
 
       this.#reset(to);
-      this.restoreValueFromTemporary(to, result);
+      this.#restoreValueFromTemporary(to, result);
     });
   }
 
@@ -148,39 +148,21 @@ export class Transcompiler {
     dividentOriginal: string,
     divisorOriginal: string
   ) {
-    this.operation(
+    this.#operation(
       `divmod (${divResult} ${modResult}) = ${dividentOriginal} / ${divisorOriginal}`,
       () => {
-        const array = this.#scope.declareTemporaryArray(
-          (this.#normalizeAddress(divResult) + 2) as Address,
-          7
-        );
-
-        this.#add(array.at(0), dividentOriginal);
-        this.#add(array.at(2), divisorOriginal);
-
-        this.#moveTo(array.at(0));
-        this.#outputBrainfuck(`[->+>-[>+>>]>[+[-<+>]>+>>]<<<<<<]`);
-
-        this.#reset(modResult);
-        this.#moveValue(modResult, array.at(3));
-        this.#reset(divResult);
-        this.#moveValue(divResult, array.at(4));
-
-        array.variables.forEach((v) => this.#reset(v));
-
-        this.#scope.unsetTemporaryArray(array);
+        this.#divmod(divResult, modResult, dividentOriginal, divisorOriginal);
       }
     );
   }
 
   while(name: string, fn: () => void) {
-    this.operation(`while ${name}`, () => {
+    this.#operation(`while ${name}`, () => {
       this.#moveTo(name);
       this.#outputBrainfuck(`[`);
     });
     this.scope(fn);
-    this.operation(`endwhile ${name}`, () => {
+    this.#operation(`endwhile ${name}`, () => {
       this.#moveTo(name);
       this.#outputBrainfuck(`]`);
     });
@@ -195,12 +177,12 @@ export class Transcompiler {
   get code(): string {
     this.#scope.deepVerifyBeforeDiscard();
 
-    this.operation('', () => {});
+    this.#operation('', () => {});
 
     return new CodePrinter(this.#code).print();
   }
 
-  operation(name: string, fn: () => void) {
+  #operation(name: string, fn: () => void) {
     if (this.#codeBlockNamesStack.length > 0) {
       this.#code.push({
         name: this.#codeBlockNamesStack[this.#codeBlockNamesStack.length - 1],
@@ -223,15 +205,15 @@ export class Transcompiler {
     this.#codeBlockNamesStack.pop();
   }
 
-  restoreValueFromTemporary(
-    name: string,
+  #restoreValueFromTemporary(
+    target: Addressable,
     temporaryWithValue: TemporaryVariable
   ) {
-    this.#moveValue(name, temporaryWithValue);
+    this.#moveValue(target, temporaryWithValue);
     this.#scope.unsetTemporaryVariable(temporaryWithValue);
   }
 
-  #add(to: Addressable, from: string) {
+  #add(to: Addressable, from: Addressable) {
     this.#moveTo(from);
     const newFrom = this.#declareTemporaryVariable(this.#cursorPosition);
 
@@ -240,7 +222,34 @@ export class Transcompiler {
       this.#inc(to);
     });
 
-    this.restoreValueFromTemporary(from, newFrom);
+    this.#restoreValueFromTemporary(from, newFrom);
+  }
+
+  #divmod(
+    divResult: Addressable,
+    modResult: Addressable,
+    dividentOriginal: Addressable,
+    divisorOriginal: Addressable
+  ) {
+    const array = this.#scope.declareTemporaryArray(
+      (this.#normalizeAddress(divResult) + 2) as Address,
+      7
+    );
+
+    this.#add(array.at(0), dividentOriginal);
+    this.#add(array.at(2), divisorOriginal);
+
+    this.#moveTo(array.at(0));
+    this.#outputBrainfuck(`[->+>-[>+>>]>[+[-<+>]>+>>]<<<<<<]`);
+
+    this.#reset(modResult);
+    this.#moveValue(modResult, array.at(3));
+    this.#reset(divResult);
+    this.#moveValue(divResult, array.at(4));
+
+    array.variables.forEach((v) => this.#reset(v));
+
+    this.#scope.unsetTemporaryArray(array);
   }
 
   #pushScope() {
@@ -274,25 +283,25 @@ export class Transcompiler {
     const newFrom = this.#declareTemporaryVariable();
     const newTo = this.#declareTemporaryVariable();
 
-    this.operation(`copy ${from} to temp`, () => {
+    this.#operation(`copy ${from} to temp`, () => {
       this.#loopOf(from, () => {
         this.#inc(newFrom);
         this.#inc(newTo);
       });
 
-      this.restoreValueFromTemporary(from, newFrom);
+      this.#restoreValueFromTemporary(from, newFrom);
     });
 
     return newTo;
   }
 
-  #moveValue(to: VariableLike, from: TemporaryVariable) {
+  #moveValue(to: Addressable, from: TemporaryVariable) {
     this.#loopOf(from, () => {
       this.#inc(to);
     });
   }
 
-  #reset(name: VariableLike) {
+  #reset(name: Addressable) {
     this.#moveTo(name);
     this.#outputBrainfuck('[-]');
   }
@@ -323,14 +332,12 @@ export class Transcompiler {
     this.#cursorPosition = address;
   }
 
-  #loopOf(variableLike: VariableLike, fn: () => void) {
-    const address = this.#normalizeVariable(variableLike).address;
-
-    this.#moveTo(address);
+  #loopOf(iterator: Addressable, fn: () => void) {
+    this.#moveTo(iterator);
     this.#outputBrainfuck(`[`);
-    this.#dec(address);
+    this.#dec(iterator);
     fn();
-    this.#moveTo(address);
+    this.#moveTo(iterator);
     this.#outputBrainfuck(`]`);
   }
 

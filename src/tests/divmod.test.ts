@@ -15,8 +15,8 @@ describe('divmod', () => {
 
     compiler.divmod('div', 'mod', 'a', 'b');
 
-    compiler.readVariable('div');
-    compiler.readVariable('mod');
+    compiler.printVariable('div');
+    compiler.printVariable('mod');
 
     expect(compiler.code).toMatchSnapshot();
 

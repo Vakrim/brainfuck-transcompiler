@@ -12,8 +12,8 @@ describe('multiplying', () => {
 
     compiler.multiply('b', 'a');
 
-    compiler.readVariable('b');
-    compiler.readVariable('a');
+    compiler.printVariable('b');
+    compiler.printVariable('a');
 
     expect(compiler.code).toMatchSnapshot();
 
@@ -30,8 +30,8 @@ describe('multiplying', () => {
 
     compiler.multiply('b', 'a');
 
-    compiler.readVariable('a');
-    compiler.readVariable('b');
+    compiler.printVariable('a');
+    compiler.printVariable('b');
 
     expect(compiler.code).toMatchSnapshot();
 

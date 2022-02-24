@@ -14,14 +14,14 @@ describe('fibonacci', () => {
     compiler.declareVariable('current');
     compiler.assignValue('current', 1);
 
-    compiler.readVariable('current');
+    compiler.printVariable('current');
 
     compiler.while('i', () => {
       compiler.declareVariable('sum');
       compiler.add('sum', 'current');
       compiler.add('sum', 'prev');
 
-      compiler.readVariable('sum');
+      compiler.printVariable('sum');
 
       compiler.assignValue('prev', 0);
       compiler.add('prev', 'current');
