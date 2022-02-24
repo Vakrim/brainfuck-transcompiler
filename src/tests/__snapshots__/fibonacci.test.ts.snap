@@ -4,11 +4,11 @@ exports[`fibonacci returns values of sequence 1`] = `
 "[-]++++++++++  assign 10 to i
 >[-]  assign 0 to prev
 >[-]+  assign 1 to current
-.  read current
+.  print current
 <<[  while i
   >>[->>+<+<]>>[-<<+>>]  add current to sum
   <<<[->>>+<+<<]>>>[-<<<+>>>]  add prev to sum
-  <.  read sum
+  <.  print sum
   <<[-]  assign 0 to prev
   >[->>+<<<+>]>>[-<<+>>]  add current to prev
   <<[-]  assign 0 to current

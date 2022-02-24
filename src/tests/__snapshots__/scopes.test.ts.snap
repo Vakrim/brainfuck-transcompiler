@@ -4,15 +4,15 @@ exports[`scopes assign memory after inner scope when usign temporary variables i
 "[-]+++  assign 3 to a
   >[-]+++++  assign 5 to b
   <[->>+<+<]>>[-<<+>>]  add a to b
-  <.  read b
-  <.  read a
+  <.  print b
+  <.  print a
 >[-]"
 `;
 
 exports[`scopes creates scope assign variable 1`] = `
 "  >[-]+++  assign 3 to innerScope
-  .  read innerScope
+  .  print innerScope
 [-]  declare outerScopeInPlace
 [-]+++++  assign 5 to outerScopeInPlace
-.  read outerScopeInPlace"
+.  print outerScopeInPlace"
 `;

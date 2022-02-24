@@ -6,8 +6,8 @@ exports[`condition handles code branching 1`] = `
 >[  if a
   <<+++++  increment b with 5
 >>[-]]  endif a
-<<.  read b
-<.  read a"
+<<.  print b
+<.  print a"
 `;
 
 exports[`condition handles if/else branching 1`] = `
@@ -18,6 +18,6 @@ exports[`condition handles if/else branching 1`] = `
 >>[-]<->]<[  else a
   <++++++++++  increment b with 10
 >-]  endif a
-<.  read b
-<.  read a"
+<.  print b
+<.  print a"
 `;

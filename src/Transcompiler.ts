@@ -48,9 +48,34 @@ export class Transcompiler {
   }
 
   printVariable(name: string) {
-    this.#operation(`read ${name}`, () => {
-      this.#moveTo(name);
-      this.#readValue();
+    this.#operation(`print ${name}`, () => {
+      this.#printValue(name);
+    });
+  }
+
+  printNumber(name: string) {
+    this.#operation(`print ${name}`, () => {
+      const ten = this.#declareTemporaryVariable(name);
+      const tens = this.#declareTemporaryVariable(name);
+      const ones = this.#declareTemporaryVariable(name);
+
+      this.#inc(ten, 10);
+
+      this.#divmod(tens, ones, name, ten);
+
+      this.#reset(ten);
+      this.#scope.unsetTemporaryVariable(ten);
+
+      this.#inc(tens, 48);
+      this.#printValue(tens);
+      this.#reset(tens);
+
+      this.#inc(ones, 48);
+      this.#printValue(ones);
+      this.#reset(ones);
+
+      this.#scope.unsetTemporaryVariable(tens);
+      this.#scope.unsetTemporaryVariable(ones);
     });
   }
 
@@ -355,7 +380,8 @@ export class Transcompiler {
     this.#outputBrainfuck(`+`.repeat(value));
   }
 
-  #readValue() {
+  #printValue(addressable: Addressable) {
+    this.#moveTo(addressable);
     this.#outputBrainfuck('.');
   }
 

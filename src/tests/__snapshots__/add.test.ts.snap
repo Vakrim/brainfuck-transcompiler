@@ -4,8 +4,8 @@ exports[`adding adds two variables 1`] = `
 "[-]++++++++++  assign 10 to a
 >[-]+++++++++++++++  assign 15 to b
 <[->>+<+<]>>[-<<+>>]  add a to b
-<.  read b
-<.  read a"
+<.  print b
+<.  print a"
 `;
 
 exports[`adding reads three inputs and sums them 1`] = `
@@ -15,5 +15,5 @@ exports[`adding reads three inputs and sums them 1`] = `
 <<[->>>>+<+<<<]>>>>[-<<<<+>>>>]  add a to sum
 <<<[->>>+<+<<]>>>[-<<<+>>>]  add b to sum
 <<[->>+<+<]>>[-<<+>>]  add c to sum
-<.  read sum"
+<.  print sum"
 `;

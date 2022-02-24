@@ -16,10 +16,6 @@ export class TemporaryArray<Size extends ArraySize = ArraySize> {
     );
   }
 
-  get size() {
-    return this.#size;
-  }
-
   at(index: Indexes<Size>) {
     return this.#variables[index];
   }
