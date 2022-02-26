@@ -1,5 +1,5 @@
-import { Memory } from '../Memory';
-import { Transcompiler } from '../Transcompiler';
+import { Memory } from '../compiler/Memory';
+import { Transcompiler } from '../compiler/Transcompiler';
 import { executeCode } from './execute-code';
 
 describe('scopes', () => {

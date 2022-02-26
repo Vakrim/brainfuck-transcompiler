@@ -1,4 +1,4 @@
-import { Transcompiler } from '../Transcompiler';
+import { Transcompiler } from '../compiler/Transcompiler';
 import { executeCode } from './execute-code';
 
 describe('compare', () => {

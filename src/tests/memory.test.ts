@@ -1,5 +1,5 @@
-import { Address } from '../Address';
-import { Memory } from '../Memory';
+import { Address } from '../compiler/Address';
+import { Memory } from '../compiler/Memory';
 
 describe(Memory, () => {
   it('allocates memory one by after another', () => {

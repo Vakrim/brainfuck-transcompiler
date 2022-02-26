@@ -1,6 +1,6 @@
 import { Address } from './Address';
 import { Memory } from './Memory';
-import { ArraySize, Indexes, TemporaryArray } from './TemporaryArray';
+import { ArraySize, TemporaryArray } from './TemporaryArray';
 import { TemporaryVariable } from './TemporaryVariable';
 import { Variable } from './Variable';
 

@@ -1,6 +1,6 @@
 import Brainfuck from 'brainfuck-node';
-import { MemoryAllocationSnap } from '../MemoryAllocationSnap';
-import { Transcompiler } from '../Transcompiler';
+import { MemoryAllocationSnap } from '../compiler/MemoryAllocationSnap';
+import { Transcompiler } from '../compiler/Transcompiler';
 
 export function executeCode(
   compiler: Transcompiler,
