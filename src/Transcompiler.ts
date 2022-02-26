@@ -66,9 +66,11 @@ export class Transcompiler {
       this.#reset(ten);
       this.#scope.unsetTemporaryVariable(ten);
 
-      this.#inc(tens, 48);
-      this.#printValue(tens);
-      this.#reset(tens);
+      this.whenever(tens, () => {
+        this.#inc(tens, 48);
+        this.#printValue(tens);
+        this.#reset(tens);
+      });
 
       this.#inc(ones, 48);
       this.#printValue(ones);

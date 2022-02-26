@@ -27,9 +27,7 @@ describe('printNumber', () => {
     ]);
 
     for (let i = 0; i < 100; i++) {
-      expect(executeCode(compiler, [i]).output).toEqual(
-        `${i}`.padStart(2, '0')
-      );
+      expect(executeCode(compiler, [i]).output).toEqual(`${i}`);
     }
   });
 });

@@ -11,7 +11,7 @@ export class CodePrinter {
     return this.#code
       .map((op) => {
         if ('code' in op) {
-          return `${' '.repeat(indentation + op.level - 1)}${[
+          return `${' '.repeat(indentation + (op.level - 1) * 2)}${[
             op.code,
             this.#sanitizeComment(op.name),
           ]

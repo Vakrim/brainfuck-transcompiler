@@ -30,10 +30,6 @@ describe('compare', () => {
       0,
     ]);
 
-    for (let i = 0; i < 10; i++) {
-      console.log(i, executeCode(compiler, [i]).codes);
-    }
-
     expect(executeCode(compiler, [0]).codes).toEqual([0]);
     expect(executeCode(compiler, [1]).codes).toEqual([0]);
     expect(executeCode(compiler, [2]).codes).toEqual([0]);
