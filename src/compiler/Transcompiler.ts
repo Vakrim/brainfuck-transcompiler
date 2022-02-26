@@ -214,14 +214,25 @@ export class Transcompiler {
     });
   }
 
-  while(name: string, fn: () => void) {
-    this.#operation(`while ${name}`, () => {
-      this.#moveTo(name);
+  times(name: string, fn: () => void) {
+    this.#operation(`times ${name}`, () => {
+      const nameCopy = this.#copy(name);
+      this.while(nameCopy, () => {
+        fn();
+        this.#dec(nameCopy);
+      });
+      this.#scope.unsetTemporaryVariable(nameCopy);
+    });
+  }
+
+  while(variable: Addressable, fn: () => void) {
+    this.#operation(`while ${this.#commentVariable(variable)}`, () => {
+      this.#moveTo(variable);
       this.#outputBrainfuck(`[`);
     });
     this.scope(fn);
-    this.#operation(`endwhile ${name}`, () => {
-      this.#moveTo(name);
+    this.#operation(`endwhile ${this.#commentVariable(variable)}`, () => {
+      this.#moveTo(variable);
       this.#outputBrainfuck(`]`);
     });
   }
