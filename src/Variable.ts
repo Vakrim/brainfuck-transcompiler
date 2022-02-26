@@ -15,4 +15,8 @@ export class Variable {
   get address() {
     return this.#address;
   }
+
+  get name() {
+    return this.#name;
+  }
 }

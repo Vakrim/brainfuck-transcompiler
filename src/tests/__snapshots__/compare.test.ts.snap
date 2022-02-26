@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`compare compares two number 1`] = `
+",  write input n
+>[-]+++++  assign 5 to m
+result = n ❯= m
+ <[->>>+>+<<<<]>>>[-<<<+>>>]  copy n to temporary〔4〕
+result = n ❯= m
+ <<[->>+>>+<<<<]>>[-<<+>>]  copy m to temporary〔5〕
+<[-]  result = n ❯= m
+ >>>[-<<+>>>+<]<<[->>+<<]  copy temporary〔5〕 to temporary〔6〕
+result = n ❯= m
+ >>>>+<[  if temporary〔5〕
+result = n ❯= m
+ [-]>-<]>[  else temporary〔5〕
+<<<<<+  result = n ❯= m
+ >>>>>-]  endif temporary〔5〕
+<<<[->-  result = n ❯= m
+ [->+<<<+>>]>[-<+>]  copy temporary〔5〕 to temporary〔3〕
+result = n ❯= m
+ +<<<[  if temporary〔5〕
+result = n ❯= m
+ [-]>>>-<<<]>>>[  else temporary〔5〕
+<<<<+  result = n ❯= m
+ >>>>-]  endif temporary〔5〕
+<<]>[-]  result = n ❯= m
+<<<.  print result"
+`;

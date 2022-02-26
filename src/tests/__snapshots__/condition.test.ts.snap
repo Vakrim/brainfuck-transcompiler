@@ -2,7 +2,7 @@
 
 exports[`condition handles code branching 1`] = `
 ",  write input a
-[->>+>+<<<]>>[-<<+>>]  copy a to temp
+[->>+>+<<<]>>[-<<+>>]  copy a to temporary〔3〕
 >[  if a
   <<+++++  increment b with 5
 >>[-]]  endif a
@@ -12,7 +12,7 @@ exports[`condition handles code branching 1`] = `
 
 exports[`condition handles if/else branching 1`] = `
 ",  write input a
-[->>+>+<<<]>>[-<<+>>]  copy a to temp
+[->>+>+<<<]>>[-<<+>>]  copy a to temporary〔3〕
 +>[  if a
   <<+++++  increment b with 5
 >>[-]<->]<[  else a

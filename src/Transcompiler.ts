@@ -98,32 +98,32 @@ export class Transcompiler {
   }
 
   whenever(
-    conditionName: string,
+    conditionName: Addressable,
     ifPostitive: () => void,
     ifNegative?: () => void
   ) {
     const conditionCopy = this.#copy(conditionName);
 
     if (!ifNegative) {
-      this.#operation(`if ${conditionName}`, () => {
+      this.#operation(`if ${this.#commentVariable(conditionName)}`, () => {
         this.#moveTo(conditionCopy);
         this.#outputBrainfuck(`[`);
       });
       this.scope(ifPostitive);
-      this.#operation(`endif ${conditionName}`, () => {
+      this.#operation(`endif ${this.#commentVariable(conditionName)}`, () => {
         this.#moveTo(conditionCopy);
         this.#outputBrainfuck(`[-]]`);
       });
     } else {
       const elseFlag = this.#declareTemporaryVariable(conditionCopy);
 
-      this.#operation(`if ${conditionName}`, () => {
+      this.#operation(`if ${this.#commentVariable(conditionName)}`, () => {
         this.#inc(elseFlag);
         this.#moveTo(conditionCopy);
         this.#outputBrainfuck(`[`);
       });
       this.scope(ifPostitive);
-      this.#operation(`else ${conditionName}`, () => {
+      this.#operation(`else ${this.#commentVariable(conditionName)}`, () => {
         this.#reset(conditionCopy);
         this.#dec(elseFlag);
         this.#moveTo(conditionCopy);
@@ -132,7 +132,7 @@ export class Transcompiler {
         this.#outputBrainfuck(`[`);
       });
       this.scope(ifNegative);
-      this.#operation(`endif ${conditionName}`, () => {
+      this.#operation(`endif ${this.#commentVariable(conditionName)}`, () => {
         this.#dec(elseFlag);
         this.#outputBrainfuck(`]`);
         this.#scope.unsetTemporaryVariable(elseFlag);
@@ -179,6 +179,37 @@ export class Transcompiler {
         this.#divmod(divResult, modResult, dividentOriginal, divisorOriginal);
       }
     );
+  }
+
+  isGreaterThanOrEqual(result: string, originalA: string, originalB: string) {
+    this.#operation(`${result} = ${originalA} >= ${originalB}`, () => {
+      const a = this.#copy(originalA);
+      const b = this.#copy(originalB);
+      this.#reset(result);
+
+      this.whenever(
+        b,
+        () => {},
+        () => {
+          this.#inc(result);
+        }
+      );
+
+      this.#loopOf(a, () => {
+        this.#dec(b);
+        this.whenever(
+          b,
+          () => {},
+          () => {
+            this.#inc(result);
+          }
+        );
+      });
+
+      this.#reset(b);
+      this.#scope.unsetTemporaryVariable(b);
+      this.#scope.unsetTemporaryVariable(a);
+    });
   }
 
   while(name: string, fn: () => void) {
@@ -304,18 +335,21 @@ export class Transcompiler {
     return variable;
   }
 
-  #copy(from: string) {
+  #copy(from: Addressable) {
     const newFrom = this.#declareTemporaryVariable();
     const newTo = this.#declareTemporaryVariable();
 
-    this.#operation(`copy ${from} to temp`, () => {
-      this.#loopOf(from, () => {
-        this.#inc(newFrom);
-        this.#inc(newTo);
-      });
+    this.#operation(
+      `copy ${this.#commentVariable(from)} to ${this.#commentVariable(newTo)}`,
+      () => {
+        this.#loopOf(from, () => {
+          this.#inc(newFrom);
+          this.#inc(newTo);
+        });
 
-      this.#restoreValueFromTemporary(from, newFrom);
-    });
+        this.#restoreValueFromTemporary(from, newFrom);
+      }
+    );
 
     return newTo;
   }
@@ -383,6 +417,17 @@ export class Transcompiler {
   #printValue(addressable: Addressable) {
     this.#moveTo(addressable);
     this.#outputBrainfuck('.');
+  }
+
+  #commentVariable(addressable: Addressable) {
+    if (typeof addressable === 'string') {
+      return addressable;
+    }
+    if (addressable instanceof Variable) {
+      return addressable.name;
+    }
+    const address = this.#normalizeAddress(addressable);
+    return `temporary[${address}]`;
   }
 
   get [scopeSymbol]() {

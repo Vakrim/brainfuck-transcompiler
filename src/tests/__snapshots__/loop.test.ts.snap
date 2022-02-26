@@ -5,7 +5,7 @@ exports[`loop doesn't memory leak on one loop 1`] = `
 >[-]++  assign 2 to product
 <[  while i
   multiply i to product
-   [->>+>+<<<]>>[-<<+>>]  copy i to temp
+   [->>+>+<<<]>>[-<<+>>]  copy i to temporary〔3〕
   >[-<<[->+>>+<<<]>[-<+>]>]<[-]<[-]>>>[-<<<+>>>]  multiply i to product
   <<<<[-]  assign 0 to i
 ]  endwhile i
@@ -26,7 +26,7 @@ exports[`loop handles while loop 2`] = `
 <,  write input a
 [  while a
   multiply a to product
-   [->>+>+<<<]>>[-<<+>>]  copy a to temp
+   [->>+>+<<<]>>[-<<+>>]  copy a to temporary〔3〕
   >[-<<[->+>>+<<<]>[-<+>]>]<[-]<[-]>>>[-<<<+>>>]  multiply a to product
   <<<<,  write input a
 ]  endwhile a
